@@ -12,7 +12,7 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/Final/00. Functions for analysis.R") 
+source("R Code/00.Functions for analysis.R") 
 
 # ---------------------------------------------------------------------------- #
 #  1. Open Data
@@ -23,10 +23,10 @@ source("R Code/Final/00. Functions for analysis.R")
 # -------------------------------- #
 
 # State
-Data_state <- get(load("R Code/Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData"))
+Data_state <- get(load("Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData"))
 
 # National
-Data_National <- get(load("R Code/Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData"))
+Data_National <- get(load("Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData"))
 
 # ---------------------------------------------------------------------------- #
 #     2. Compute life tables
@@ -56,4 +56,4 @@ Mexico_e0_e65 <- Life_table_Mex %>%
   dplyr::select( ENTIDAD, ENTIDAD_NAME, YEAR, Sex, Age, ex)
 
 
-save(Mexico_e0_e65, file = "R Code/Data/Final/Mexico_e0_e65.RData")
+save(Mexico_e0_e65, file = "Data/Final/Mexico_e0_e65.RData")

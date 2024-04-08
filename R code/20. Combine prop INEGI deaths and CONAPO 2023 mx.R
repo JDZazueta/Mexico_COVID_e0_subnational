@@ -13,7 +13,7 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/Final/00. Functions for analysis.R") 
+source("R Code/00. Functions for analysis.R") 
 
 # ---------------------------------------------------------------------------- #
 #     1. Open databases
@@ -23,7 +23,7 @@ source("R Code/Final/00. Functions for analysis.R")
 # 1.1 Deaths INEGI
 # --------------------------
 
-INEGI <- get(load("R Code/Data/tmp/Data_deaths_1998_2021_adj.RData"))
+INEGI <- get(load("Data/tmp/Data_deaths_1998_2021_adj.RData"))
 
 table(INEGI$ENT_REGIS, INEGI$YEAR)
 # Transform to numeric
@@ -84,7 +84,7 @@ Data_5x1_adj_State_wider <- Data_5x1_adj %>%
 # 1.2 CONAPO mx
 # --------------------------
 
-CONAPO_mx <-get(load("R Code/Data/tmp/CONAPO_2023_1998_2021_aggregated.RData"))
+CONAPO_mx <-get(load("Data/tmp/CONAPO_2023_1998_2021_aggregated.RData"))
 
 CONAPO_mx_State_tomerge <- CONAPO_mx %>% 
   filter(ENTIDAD!="República Mexicana") %>% 
@@ -116,7 +116,7 @@ Data_analysis_National_2023 <- Data_analysis_National_CONAPO_2023 %>%
 
 
 
-save(Data_analysis_National_2023, file = "R Code/Data/Final/Data_analysis_CoD_National_CONAPO_2023.RData")
+save(Data_analysis_National_2023, file = "Data/Final/Data_analysis_CoD_National_CONAPO_2023.RData")
 
 
 # ------------------------
@@ -133,7 +133,7 @@ Data_analysis_State_2023 <- Data_analysis_State_CONAPO_2023 %>%
 
 
 
-save(Data_analysis_State_2023, file = "R Code/Data/Final/Data_analysis_CoD_State_CONAPO_2023.RData")
+save(Data_analysis_State_2023, file = "Data/Final/Data_analysis_CoD_State_CONAPO_2023.RData")
 
 
 # ------------------------
@@ -141,8 +141,8 @@ save(Data_analysis_State_2023, file = "R Code/Data/Final/Data_analysis_CoD_State
 # ------------------------
 
 # 2.3.1 National
-save(Data_analysis_National_CONAPO_2023, file = "R Code/Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData")
+save(Data_analysis_National_CONAPO_2023, file = "Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData")
 
 # 2.3.2 State
-save(Data_analysis_State_CONAPO_2023, file = "R Code/Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData")
+save(Data_analysis_State_CONAPO_2023, file = "Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData")
 

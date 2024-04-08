@@ -13,17 +13,17 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/Final/00. Functions for analysis.R") 
+source("R Code/00. Functions for analysis.R") 
 
 # ---------------------------------------------------------------------------- #
 #  1. Open data sets
 # ---------------------------------------------------------------------------- #
 
 # - Data life expectancy trends
-get(load("R Code/Data/Final/Mexico_e0_e65.RData"))
+get(load("Data/Final/Mexico_e0_e65.RData"))
 
 # - Data ASDR
-get(load("R Code/Data/Final/MEX_ASMR.RData"))
+get(load("Data/Final/MEX_ASMR.RData"))
 
 # ---------------------------------------------------------------------------- #
 #  2. Prepare data for figures
@@ -141,7 +141,7 @@ Figure_SM_1 <- ggplot(Data_SM_figure_1) +
        x="")
 Figure_SM_1
 ggsave(filename = "Supplemental Figure 1.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 10,
        bg = "transparent")
 
@@ -175,7 +175,7 @@ Figure_SM_6 <- ggplot(Data_SM_figure_1,
        x="")
 Figure_SM_6
 ggsave(filename = "Supplemental Figure 6.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 12,
        bg = "transparent")
 
@@ -237,7 +237,7 @@ Figure_SM_7 <- ggplot(Data_SM_7,
        x="Year")
 Figure_SM_7
 ggsave(filename = "Supplemental Figure 7.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 12,
        bg = "transparent")
 
@@ -309,7 +309,7 @@ Figure_SM_8 <- ggplot(Data_SM_8,
        x="Year")
 Figure_SM_8
 ggsave(filename = "Supplemental Figure 8.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 12,
        bg = "transparent")
 
@@ -344,7 +344,7 @@ Figure_SM_9 <- ggplot(Data_SM_8,
        x="Year")
 Figure_SM_9
 ggsave(filename = "Supplemental Figure 9.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 12,
        bg = "transparent")
 
@@ -381,7 +381,7 @@ Figure_SM_10 <- ggplot(Data_SM_8,
        x="Year")
 Figure_SM_10
 ggsave(filename = "Supplemental Figure 10.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 12,
        bg = "transparent")
 
@@ -416,7 +416,7 @@ Figure_SM_11 <- ggplot(Data_SM_8,
        x="Year")
 Figure_SM_11
 ggsave(filename = "Supplemental Figure 11.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 12,
        bg = "transparent")
 
@@ -451,6 +451,6 @@ Figure_SM_12 <- ggplot(Data_SM_8,
        x="Year")
 Figure_SM_12
 ggsave(filename = "Supplemental Figure 12.png",
-       path= "Figures/Supplementary material/TLGH/Trends/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 10, height = 12,
        bg = "transparent")

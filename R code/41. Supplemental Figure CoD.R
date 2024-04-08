@@ -189,7 +189,7 @@ Figure_SM_2 <- ggplot(Data_SMFig_Violence,
        x="")
 Figure_SM_2
 ggsave(filename = "Supplemental Figure 2.png",
-       path= "Figures/Supplementary material/TLGH/CoD/",
+       path= "Figures/Supplementary material/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 

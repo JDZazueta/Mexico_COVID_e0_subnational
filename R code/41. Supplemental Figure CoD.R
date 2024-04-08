@@ -225,7 +225,7 @@ Figure_SM_3 <- ggplot(Data_SMFig_COVID,
        x="")
 Figure_SM_3
 ggsave(filename = "Supplemental Figure 3.png",
-       path= "Figures/Supplementary material/TLGH/CoD/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -260,7 +260,7 @@ Figure_SM_4 <- ggplot(Data_SMFig_Diabetes,
        x="")
 Figure_SM_4
 ggsave(filename = "Supplemental Figure 4.png",
-       path= "Figures/Supplementary material/TLGH/CoD/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -295,7 +295,7 @@ Figure_SM_5 <- ggplot(Data_SMFig_Amenable,
        x="")
 Figure_SM_5
 ggsave(filename = "Supplemental Figure 5.png",
-       path= "Figures/Supplementary material/TLGH/CoD/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 

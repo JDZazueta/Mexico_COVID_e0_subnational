@@ -285,7 +285,7 @@ Figure_1 <- ggplot(Data_Figure_1,
        x="Age groups")
 Figure_1
 ggsave(filename = "Figure 1.png",
-       path= "Figures/Main Figures/TLGH/",
+       path= "Figures/Main Figures/",
        dpi = 320, width = 10, height = 8,
        scale=2.5,
        units = "cm",
@@ -322,7 +322,7 @@ Figure_2 <- ggplot(Data_fig_2,
        x="")
 Figure_2
 ggsave(filename = "Figure 2.png",
-       path= "Figures/Main Figures/TLGH/",
+       path= "Figures/Main Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -356,7 +356,7 @@ Figure_3 <- ggplot(Data_fig_3,
        x="")
 Figure_3
 ggsave(filename = "Figure 3.png",
-       path= "Figures/Main Figures/TLGH/",
+       path= "Figures/Main Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -389,7 +389,7 @@ Figure_4 <- ggplot(Data_fig_4,
        x="")
 Figure_4
 ggsave(filename = "Figure 4.png",
-       path= "Figures/Main Figures/TLGH/",
+       path= "Figures/Main Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -422,7 +422,7 @@ Figure_5 <- ggplot(Data_fig_5,
        x="")
 Figure_5
 ggsave(filename = "Figure 5.png",
-       path= "Figures/Main Figures/TLGH/",
+       path= "Figures/Main Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 

@@ -13,7 +13,7 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/Final/00. Functions for analysis.R") 
+source("R Code/00. Functions for analysis.R") 
 
 # ---------------------------------------------------------------------------- #
 #  1. Open datasets
@@ -24,7 +24,7 @@ source("R Code/Final/00. Functions for analysis.R")
 # Coneval
 # --------------------------------
 
-CONEVAL <- read.csv("R Code/Data/CONEVAL/Indicadores_poverty_2016_2022.csv", header = T)
+CONEVAL <- read.csv("Data/CONEVAL/Indicadores_poverty_2016_2022.csv", header = T)
 
 table(CONEVAL$ent)
 
@@ -128,7 +128,7 @@ Figure_1 <- ggplot(CONEVAL_data, mapping = aes(x=reorder(ENTIDAD,-Pobreza),
     x="")
 Figure_1
 ggsave(filename = "Supplemental Figure 13.png",
-       path= "Figures/Supplementary material/TLGH/CONEVAL/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -164,7 +164,7 @@ Figure_2 <- ggplot(CONEVAL_data, mapping = aes(x=reorder(ENTIDAD,-Carencias),
     x="")
 Figure_2
 ggsave(filename = "Supplemental Figure 14.png",
-       path= "Figures/Supplementary material/TLGH/CONEVAL/",
+       path= "Figures/Supplementary Figures/",
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 

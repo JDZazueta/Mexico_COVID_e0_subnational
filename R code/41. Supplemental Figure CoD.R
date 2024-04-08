@@ -13,14 +13,14 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/Final/00. Functions for analysis.R") 
+source("R Code/00. Functions for analysis.R") 
 
 # ---------------------------------------------------------------------------- #
 #  1. Open datasets
 # ---------------------------------------------------------------------------- #
 
 # - Decomposition
-get(load("R Code/Data/Final/Decomp_e0_results_state.RData"))
+get(load("Data/Final/Decomp_e0_results_state.RData"))
 
 # ---------------------------------------------------------------------------- #
 #  2. Prepare data for figures

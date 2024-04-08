@@ -48,10 +48,10 @@ read_Data <- function(file){
 # ---------------------------------------------------------------------------- #
 
 # Create a list with files names
-file.names <- list.files("R Code/Data/INEGI")
+file.names <- list.files("Data/INEGI")
 # Open files by applying the function
 Deaths_1990_2021 <- do.call(rbind, lapply(file.names, read_Data))
 
 # We save the data
-save(Deaths_1990_2021, file = "R Code/Data/tmp/Raw deaths 1990-2021.RData")
+save(Deaths_1990_2021, file = "Data/tmp/Raw deaths 1990-2021.RData")
 

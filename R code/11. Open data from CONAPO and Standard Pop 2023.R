@@ -13,7 +13,7 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/Final/00. Functions for analysis.R") 
+source("R Code/00. Functions for analysis.R") 
 
 # ---------------------------------------------------------------------------- #
 #     1. Open databases
@@ -23,7 +23,7 @@ source("R Code/Final/00. Functions for analysis.R")
 #  Exposure data
 #################################
 
-PSY <- read.csv("R Code/Data/CONAPO/2023/00_Pob_Mitad_1950_2070.csv", header = T, sep = ",", stringsAsFactors=FALSE)
+PSY <- read.csv("Data/CONAPO/2023/00_Pob_Mitad_1950_2070.csv", header = T, sep = ",", stringsAsFactors=FALSE)
 
 colnames(PSY)[2] <- "Year"
 colnames(PSY)[5] <- "Age"

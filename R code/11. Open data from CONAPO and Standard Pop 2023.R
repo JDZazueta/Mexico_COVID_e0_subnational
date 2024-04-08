@@ -65,7 +65,7 @@ CONAPO_exp_98_2021_aggregated <- PSY %>%
 #  Deaths data
 #################################
 
-Dx <- read.csv("R Code/Data/CONAPO/2023/01_Defunciones_1950_2070.csv", header = T, sep = ",", stringsAsFactors=FALSE)
+Dx <- read.csv("Data/CONAPO/2023/01_Defunciones_1950_2070.csv", header = T, sep = ",", stringsAsFactors=FALSE)
 
 colnames(Dx)[2] <- "Year"
 colnames(Dx)[6] <- "Age"
@@ -113,7 +113,7 @@ CONAPO_1998_2021 <- merge(CONAPO_exp_98_2021_aggregated,
                                "ENTIDAD", "CVE_GEO"))
 
 
-save(CONAPO_1998_2021, file = "R Code/Data/tmp/CONAPO_2023_1998_2021_aggregated.RData")
+save(CONAPO_1998_2021, file = "Data/tmp/CONAPO_2023_1998_2021_aggregated.RData")
 
 
 # ---------------------------------------------------------------------------- #
@@ -130,5 +130,5 @@ CONAPO_StandarPopulation <- CONAPO_exp_98_2021_aggregated %>%
   dplyr::select(-c(MEX, Total)) 
 
 
-save(CONAPO_StandarPopulation, file = "R Code/Data/tmp/CONAPO_StandarPopulation.RData")
+save(CONAPO_StandarPopulation, file = "Data/tmp/CONAPO_StandarPopulation.RData")
 

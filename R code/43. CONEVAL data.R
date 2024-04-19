@@ -1,6 +1,6 @@
 ################################################################################
 # Article: Mexico’s surge of violence and COVID-19 drive life expectancy losses 2015–2021
-# Title:   Main Figures 
+# Title:   Main Figures
 # Authors: Daniel, Paola, Maria & José Manuel
 # Data:    Proyecciones de poblacion CONAPO (2023), CONEVAL (2016-2018), and
 #          Deaths from INEGI
@@ -13,7 +13,10 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/00. Functions for analysis.R") 
+
+pacman::p_load(here)
+
+source(here::here("R Code/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #  1. Open datasets
@@ -24,12 +27,12 @@ source("R Code/00. Functions for analysis.R")
 # Coneval
 # --------------------------------
 
-CONEVAL <- read.csv("Data/CONEVAL/Indicadores_poverty_2016_2022.csv", header = T)
+CONEVAL <- read.csv(here::here("Data/CONEVAL/Indicadores_poverty_2016_2022.csv"), header = T)
 
 table(CONEVAL$ent)
 
 
-CONEVAL_data <- CONEVAL %>% 
+CONEVAL_data <- CONEVAL %>%
   mutate(ent = recode(ent,
                       "Ciudad de M\xe9xico" = "Mexico City",
                       "Michoac\xe1n de Ocampo" = "Michoacan",
@@ -39,33 +42,33 @@ CONEVAL_data <- CONEVAL %>%
                       "Nuevo Le\xf3n" = "Nuevo Leon",
                       "Quer\xe9taro" = "Queretaro",
                       "Veracruz de Ignacio de la Llave" = "Veracruz",
-                      "Yucat\xe1n" = "Yucatan")) %>% 
-  rename(ENTIDAD = ent) %>% 
-  dplyr::select(ENTIDAD, sexo, year, pobreza, carencias) %>% 
+                      "Yucat\xe1n" = "Yucatan")) %>%
+  rename(ENTIDAD = ent) %>%
+  dplyr::select(ENTIDAD, sexo, year, pobreza, carencias) %>%
   pivot_wider(names_from = year,
-              values_from = c(pobreza, carencias)) %>% 
+              values_from = c(pobreza, carencias)) %>%
   mutate(pobreza_t1 = (pobreza_2016 + pobreza_2018 + pobreza_2020)/3,
          pobreza_t2 = pobreza_2020,
          pobreza_t3 = (pobreza_2020 + pobreza_2022)/2,
          carencias_t1 = (carencias_2016 + carencias_2018 + carencias_2020)/3,
          carencias_t2 = carencias_2020,
-         carencias_t3 = (carencias_2020 +  carencias_2022)/2) %>% 
+         carencias_t3 = (carencias_2020 +  carencias_2022)/2) %>%
   dplyr::select(ENTIDAD,  sexo,
                 pobreza_t1, pobreza_t2, pobreza_t3,
-                carencias_t1, carencias_t2, carencias_t3) %>% 
+                carencias_t1, carencias_t2, carencias_t3) %>%
   pivot_longer(!c(ENTIDAD, sexo),
                names_to = "Variable",
-               values_to = "Value") %>% 
+               values_to = "Value") %>%
   mutate(Indicador = case_when((Variable=="pobreza_t1" | Variable=="pobreza_t2" | Variable=="pobreza_t3") ~ "Pobreza",
                                (Variable=="carencias_t1" | Variable=="carencias_t2" | Variable=="carencias_t3") ~ "Carencias"),
          Period = case_when(Variable=="pobreza_t1" | Variable=="carencias_t1"  ~ "2015-2019",
                             Variable=="pobreza_t2" | Variable=="carencias_t2"  ~ "2020",
                             Variable=="pobreza_t3" | Variable=="carencias_t3"  ~ "2020-2021"),
          Sex = case_when(sexo==1 ~ "Males",
-                         sexo==2 ~ "Females")) %>% 
-  dplyr::select(ENTIDAD, Sex, Indicador, Period, Value)  %>% 
+                         sexo==2 ~ "Females")) %>%
+  dplyr::select(ENTIDAD, Sex, Indicador, Period, Value)  %>%
   pivot_wider(names_from = Indicador,
-              values_from = Value) %>% 
+              values_from = Value) %>%
   mutate(Region = case_when(ENTIDAD=="Chihuahua" | ENTIDAD=="Sinaloa" |
                               ENTIDAD=="Durango" | ENTIDAD=="Baja California" |
                               ENTIDAD=="Nuevo Leon" | ENTIDAD=="Tamaulipas" |
@@ -93,8 +96,8 @@ CONEVAL_data <- CONEVAL %>%
 
 CONEVAL_data$Region <- factor(CONEVAL_data$Region,
                               levels = c(1,2,3),
-                              labels = c("North", 
-                                         "Central", 
+                              labels = c("North",
+                                         "Central",
                                          "South"))
 
 
@@ -106,10 +109,10 @@ Figure_1 <- ggplot(CONEVAL_data, mapping = aes(x=reorder(ENTIDAD,-Pobreza),
   coord_flip() +
   theme_classic() +
   scale_color_manual(values = c("grey40", "red4")) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 16),
         #legend.position=c(.6, 0.15),
         legend.position="bottom",
-        #legend.background = element_rect(fill="transparent", 
+        #legend.background = element_rect(fill="transparent",
         #                                 size=1, linetyarrangepe="solid", color = "white"),
         #strip.background = element_rect(color="black", fill="grey80", size=0.5, linetype="solid"),
         strip.background = element_rect(fill = "grey40", color = "grey20", size = 1),
@@ -128,7 +131,7 @@ Figure_1 <- ggplot(CONEVAL_data, mapping = aes(x=reorder(ENTIDAD,-Pobreza),
     x="")
 Figure_1
 ggsave(filename = "Supplemental Figure 13.png",
-       path= "Figures/Supplementary Figures/",
+       path = here::here("Figures/Supplementary Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -142,10 +145,10 @@ Figure_2 <- ggplot(CONEVAL_data, mapping = aes(x=reorder(ENTIDAD,-Carencias),
   coord_flip() +
   theme_classic() +
   scale_color_manual(values = c("grey40", "red4")) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 16),
         #legend.position=c(.6, 0.15),
         legend.position="bottom",
-        #legend.background = element_rect(fill="transparent", 
+        #legend.background = element_rect(fill="transparent",
         #                                 size=1, linetyarrangepe="solid", color = "white"),
         #strip.background = element_rect(color="black", fill="grey80", size=0.5, linetype="solid"),
         strip.background = element_rect(fill = "grey40", color = "grey20", size = 1),
@@ -164,7 +167,7 @@ Figure_2 <- ggplot(CONEVAL_data, mapping = aes(x=reorder(ENTIDAD,-Carencias),
     x="")
 Figure_2
 ggsave(filename = "Supplemental Figure 14.png",
-       path= "Figures/Supplementary Figures/",
+       path = here::here("Figures/Supplementary Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 

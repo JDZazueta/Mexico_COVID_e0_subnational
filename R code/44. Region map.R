@@ -4,17 +4,8 @@
 # Authors: Daniel, Paola, Maria & José Manuel
 ################################################################################
 
-library(sp)
-library(ggplot2)
-library(grid)
-
-
-# Using maps package from Diego Valle Jones
-if (!require("devtools")) {
-    install.packages("devtools")
-}
-devtools::install_github("diegovalle/mxmaps")
-library("mxmaps")
+pacman::p_load(here, sp, ggplot2, grid, devtools)
+pacman::p_load_gh("diegovalle/mxmaps") # maps package from Diego Valle Jones is on github
 
 # Create a new vector to fill with our regions
 df_mxstate$region2 <- 0
@@ -43,3 +34,10 @@ M2 <- M + scale_colour_manual(values = colors,
                               breaks = c("1. North", "2. Central", "3. South"),
                               labels = c("North", "Central", "South"),
                               aesthetics = c("colour", "fill"))
+
+M2
+ggsave(filename = "Region map.png",
+       path = here::here("Figures/Supplementary Figures/"),
+       dpi = 320, width = 8, height = 9,
+       bg = "transparent")
+

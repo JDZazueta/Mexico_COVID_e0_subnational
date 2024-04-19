@@ -1,6 +1,6 @@
 ################################################################################
 # Article: Mexico’s surge of violence and COVID-19 drive life expectancy losses 2015–2021
-# Title:   Main Figures 
+# Title:   Main Figures
 # Authors: Daniel, Paola, Maria & José Manuel
 # Data:    Proyecciones de poblacion CONAPO (2023), CONEVAL (2016-2018), and
 #          Deaths from INEGI
@@ -13,14 +13,17 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/00. Functions for analysis.R") 
+
+pacman::p_load(here)
+
+source(here::here("R Code/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #  1. Open datasets
 # ---------------------------------------------------------------------------- #
 
 # - Decomposition
-get(load("Data/Final/Decomp_e0_results_state.RData"))
+get(load(here::here("Data/Final/Decomp_e0_results_state.RData")))
 
 # ---------------------------------------------------------------------------- #
 #  2. Prepare data for figures
@@ -44,7 +47,7 @@ Decomp_e0_results$ENTIDAD <- factor(Decomp_e0_results$ENTIDAD, levels = c(seq(0,
 # Prepare data Figure 1
 # ------------------
 
-Data_Figure_1 <- Decomp_e0_results %>% 
+Data_Figure_1 <- Decomp_e0_results %>%
   mutate(Age_10 =case_when(Age>=0 & Age<=9 ~ 0,
                            Age>=10 & Age<=19 ~ 10,
                            Age>=20 & Age<=29 ~ 20,
@@ -56,25 +59,25 @@ Data_Figure_1 <- Decomp_e0_results %>%
                            Age>=80 & Age<=89 ~ 80,
                            Age>=90~ 90),
          Sex = case_when(SEX=="MALES" ~ 1,
-                         SEX=="FEMALES" ~ 2)) %>% 
-  dplyr::select(-Age, -SEX) %>% 
-  rename(Age = Age_10) %>% 
-  group_by(Period, Sex, Age, Cause, ENTIDAD) %>% 
-  summarize(Contribution = sum(Contribution)) %>% 
+                         SEX=="FEMALES" ~ 2)) %>%
+  dplyr::select(-Age, -SEX) %>%
+  rename(Age = Age_10) %>%
+  group_by(Period, Sex, Age, Cause, ENTIDAD) %>%
+  summarize(Contribution = sum(Contribution)) %>%
   mutate(Groups = case_when(Cause=="COVID" ~ 1,
                             Cause=="Diabetes" ~ 2,
                             Cause=="Digestive" | Cause=="Infectious diseases" |
                               Cause=="Neoplasm" | Cause=="Perinatal" |
                               Cause=="Circulatory"  | Cause=="Respiratory" ~ 3,
-                            Cause=="Homicides & Violence" ~ 4, 
+                            Cause=="Homicides & Violence" ~ 4,
                             Cause=="Other externals" ~ 5,
-                            Cause=="Rest of causes" ~ 6)) %>% 
-  group_by(Age, Sex, Period, Groups, ENTIDAD) %>% 
-  summarize(Contribution = sum(Contribution)) %>% 
-  mutate(Total_Age = sum(Contribution)) %>% 
+                            Cause=="Rest of causes" ~ 6)) %>%
+  group_by(Age, Sex, Period, Groups, ENTIDAD) %>%
+  summarize(Contribution = sum(Contribution)) %>%
+  mutate(Total_Age = sum(Contribution)) %>%
   filter(Period=="2015-2019" |
            Period=="2019-2020" |
-           Period=="2020-2021")  %>% 
+           Period=="2020-2021")  %>%
   filter(ENTIDAD=="National")
 
 
@@ -82,7 +85,7 @@ Data_Figure_1$Sex <- factor(Data_Figure_1$Sex, levels = c(1,2),
                             labels = c("Males","Females"))
 
 Data_Figure_1$Age <- factor(Data_Figure_1$Age, levels = c(seq(0,90,10)),
-                            labels = c("0-9","10-19", 
+                            labels = c("0-9","10-19",
                                        "20-29", "30-39",
                                        "40-49", "50-59",
                                        "60-69", "70-79",
@@ -100,8 +103,8 @@ Data_Figure_1$Groups <- factor(Data_Figure_1$Groups,
 # ------------------
 
 
-Data_figure_2_5 <- Decomp_e0_results %>% 
-  filter(ENTIDAD!="National") %>% 
+Data_figure_2_5 <- Decomp_e0_results %>%
+  filter(ENTIDAD!="National") %>%
   mutate(Sex = case_when(SEX=="MALES" ~ 1,
                          SEX=="FEMALES" ~ 2),
          Groups = case_when(Cause=="COVID" ~ 1,
@@ -109,15 +112,15 @@ Data_figure_2_5 <- Decomp_e0_results %>%
                             Cause=="Digestive" | Cause=="Infectious diseases" |
                               Cause=="Neoplasm" | Cause=="Perinatal" |
                               Cause=="Circulatory"  | Cause=="Respiratory" ~ 3,
-                            Cause=="Homicides & Violence" ~ 4, 
+                            Cause=="Homicides & Violence" ~ 4,
                             Cause=="Other externals" ~ 5,
-                            Cause=="Rest of causes" ~ 6)) %>% 
-  dplyr::select(-SEX) %>% 
-  group_by(Period, Sex, Groups, ENTIDAD) %>% 
-  summarise(Contribution=sum(Contribution)) %>% 
-  group_by(Period, Sex, ENTIDAD) %>% 
-  mutate(Total = sum(Contribution)) %>% 
-  ungroup() %>% 
+                            Cause=="Rest of causes" ~ 6)) %>%
+  dplyr::select(-SEX) %>%
+  group_by(Period, Sex, Groups, ENTIDAD) %>%
+  summarise(Contribution=sum(Contribution)) %>%
+  group_by(Period, Sex, ENTIDAD) %>%
+  mutate(Total = sum(Contribution)) %>%
+  ungroup() %>%
   mutate(Relative = Contribution/Total*100,
          Region = case_when(ENTIDAD=="Chihuahua" | ENTIDAD=="Sinaloa" |
                               ENTIDAD=="Durango" | ENTIDAD=="Baja California" |
@@ -136,10 +139,10 @@ Data_figure_2_5 <- Decomp_e0_results %>%
                               ENTIDAD=="Quintana Roo" | ENTIDAD=="Tabasco" |
                               ENTIDAD=="Hidalgo" | ENTIDAD=="Mexico" |
                               ENTIDAD=="Puebla" | ENTIDAD=="Campeche" |
-                              ENTIDAD=="Yucatan" | ENTIDAD=="Chiapas" ~ 3)) %>% 
-  group_by(ENTIDAD, Period, Sex, Groups, Region) %>% 
-  summarize(Contribution = sum(Contribution)) %>% 
-  group_by(ENTIDAD, Period, Sex, Region) %>% 
+                              ENTIDAD=="Yucatan" | ENTIDAD=="Chiapas" ~ 3)) %>%
+  group_by(ENTIDAD, Period, Sex, Groups, Region) %>%
+  summarize(Contribution = sum(Contribution)) %>%
+  group_by(ENTIDAD, Period, Sex, Region) %>%
   mutate(Total_ex = sum(Contribution))
 
 # - Labels Figure 2
@@ -156,8 +159,8 @@ Data_figure_2_5$Groups <- factor(Data_figure_2_5$Groups,
 
 Data_figure_2_5$Region <- factor(Data_figure_2_5$Region,
                                  levels = c(1,2,3),
-                                 labels = c("North", 
-                                            "Central", 
+                                 labels = c("North",
+                                            "Central",
                                             "South"))
 
 
@@ -165,42 +168,42 @@ Data_figure_2_5$Region <- factor(Data_figure_2_5$Region,
 # Data figure 2
 ######################
 
-Data_fig_2 <- Data_figure_2_5 %>% 
-  filter(Period=="2015-2021") %>% 
-  filter(Groups=="Homicides & Violence") %>% 
-  group_by(Sex, Period, Region) %>% 
+Data_fig_2 <- Data_figure_2_5 %>%
+  filter(Period=="2015-2021") %>%
+  filter(Groups=="Homicides & Violence") %>%
+  group_by(Sex, Period, Region) %>%
   mutate(Total_violence = sum(Contribution),
-         Entidad_order = fct_reorder(ENTIDAD, Total_violence))  
+         Entidad_order = fct_reorder(ENTIDAD, Total_violence))
 
 ######################
 # Data figure 3
 ######################
 
-Data_fig_3 <- Data_figure_2_5 %>% 
+Data_fig_3 <- Data_figure_2_5 %>%
   filter(Period=="2019-2021") %>%
-  filter(Groups=="COVID") %>% 
-  group_by(Sex, ENTIDAD, Region, Groups, Period) %>% 
-  summarize(Contribution = sum(Contribution))  
+  filter(Groups=="COVID") %>%
+  group_by(Sex, ENTIDAD, Region, Groups, Period) %>%
+  summarize(Contribution = sum(Contribution))
 
 ######################
 # Data figure 4
 ######################
 
-Data_fig_4 <- Data_figure_2_5 %>% 
+Data_fig_4 <- Data_figure_2_5 %>%
   filter(Period=="2019-2021") %>%
-  filter(Groups=="Diabetes") %>% 
-  group_by(Sex, ENTIDAD, Region, Groups, Period) %>% 
-  summarize(Contribution = sum(Contribution))  
+  filter(Groups=="Diabetes") %>%
+  group_by(Sex, ENTIDAD, Region, Groups, Period) %>%
+  summarize(Contribution = sum(Contribution))
 
 ######################
 # Data figure 5
 ######################
 
-Data_fig_5 <- Data_figure_2_5 %>% 
-  filter(Period=="2015-2021") %>% 
-  filter(Groups=="Amenable diseases") %>% 
-  group_by(Sex, ENTIDAD, Region, Groups, Period) %>% 
-  summarize(Contribution = sum(Contribution))  
+Data_fig_5 <- Data_figure_2_5 %>%
+  filter(Period=="2015-2021") %>%
+  filter(Groups=="Amenable diseases") %>%
+  group_by(Sex, ENTIDAD, Region, Groups, Period) %>%
+  summarize(Contribution = sum(Contribution))
 
 
 # ---------------------------------------------------------------------------- #
@@ -209,12 +212,12 @@ Data_fig_5 <- Data_figure_2_5 %>%
 
 
 # ---------------------------------------------------------------------------- #
-#  Figure 1. Cause-specific contributions to life-expectancy changes, by age, sex, 
+#  Figure 1. Cause-specific contributions to life-expectancy changes, by age, sex,
 #            and period, 2015–2021.
 # ---------------------------------------------------------------------------- #
 
-Data_Figure_1_total <- Data_Figure_1 %>% 
-  group_by(Sex, Period) %>% 
+Data_Figure_1_total <- Data_Figure_1 %>%
+  group_by(Sex, Period) %>%
   summarise(Contribution=sum(Contribution))
 
 # Text Figure 1
@@ -228,11 +231,11 @@ Data_MEX_label_10x1 <- data.frame(Contribution=c(-0.25, -1, -0.11,
                                              "COVID","COVID","COVID"),
                                   Period = c("2015-2019", "2019-2020", "2020-2021",
                                              "2015-2019", "2019-2020", "2020-2021"),
-                                  Text = c("Life expectancy change:", 
-                                           "Life expectancy change:", 
+                                  Text = c("Life expectancy change:",
                                            "Life expectancy change:",
-                                           "Life expectancy change:", 
-                                           "Life expectancy change:", 
+                                           "Life expectancy change:",
+                                           "Life expectancy change:",
+                                           "Life expectancy change:",
                                            "Life expectancy change:"))
 # Text Figure 1
 Data_MEX_label_10x1_2 <- data.frame(Contribution=c(-0.25, -1, -0.11,
@@ -245,16 +248,16 @@ Data_MEX_label_10x1_2 <- data.frame(Contribution=c(-0.25, -1, -0.11,
                                                "COVID","COVID","COVID"),
                                     Period = c("2015-2019", "2019-2020", "2020-2021",
                                                "2015-2019", "2019-2020", "2020-2021"),
-                                    Text = c("-0.76y", 
-                                             "-5.28y", 
+                                    Text = c("-0.76y",
+                                             "-5.28y",
                                              " 0.14y",
-                                             " 0.09y", 
-                                             "-3.53y", 
+                                             " 0.09y",
+                                             "-3.53y",
                                              "-0.43y"))
 
 
 
-Figure_1 <- ggplot(Data_Figure_1, 
+Figure_1 <- ggplot(Data_Figure_1,
                    aes(x=Age, y=Contribution,
                        fill=Groups, pattern=Groups)) +
   geom_bar(stat = "identity", position = "stack",
@@ -267,9 +270,9 @@ Figure_1 <- ggplot(Data_Figure_1,
             position = position_dodge(width =  1), color="black") +
   theme_classic() +
   scale_fill_manual(values = Color_big_groups) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 16),
         legend.position="bottom",
-        legend.background = element_rect(fill="transparent", 
+        legend.background = element_rect(fill="transparent",
                                          size=1, linetype="solid", color = "white"),
         #strip.background = element_rect(color="black", fill="grey80", size=0.5, linetype="solid"),
         strip.background = element_rect(fill = "grey40", color = "grey20", size = 1),
@@ -285,7 +288,7 @@ Figure_1 <- ggplot(Data_Figure_1,
        x="Age groups")
 Figure_1
 ggsave(filename = "Figure 1.png",
-       path= "Figures/Main Figures/",
+       path = here::here("Figures/Main Figures/"),
        dpi = 320, width = 10, height = 8,
        scale=2.5,
        units = "cm",
@@ -297,17 +300,17 @@ ggsave(filename = "Figure 1.png",
 # ---------------------------------------------------------------------------- #
 
 Figure_2 <- ggplot(Data_fig_2,
-                   aes(x=reorder(ENTIDAD, -Contribution), 
+                   aes(x=reorder(ENTIDAD, -Contribution),
                        y=Contribution,
                        color=Sex)) +
   geom_point(aes(shape=Sex, color=Sex), size=3) +
-  facet_grid(Region ~ Period, scales = "free") + 
+  facet_grid(Region ~ Period, scales = "free") +
   scale_shape_manual(values=c(15,2))+
   coord_flip() +
   geom_hline(yintercept = 0, linetype = "dashed", size= 1.5) +
   theme_classic() +
   scale_color_manual(values = c("red4", "red4")) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 16),
         legend.position="bottom",
         strip.background = element_rect(fill = "grey40", color = "grey20", size = 1),
         strip.text = element_text(colour = "white"),
@@ -322,7 +325,7 @@ Figure_2 <- ggplot(Data_fig_2,
        x="")
 Figure_2
 ggsave(filename = "Figure 2.png",
-       path= "Figures/Main Figures/",
+       path = here::here("Figures/Main Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -332,17 +335,17 @@ ggsave(filename = "Figure 2.png",
 # ---------------------------------------------------------------------------- #
 
 Figure_3 <- ggplot(Data_fig_3,
-                         aes(x=reorder(ENTIDAD, -Contribution), 
+                         aes(x=reorder(ENTIDAD, -Contribution),
                              y=Contribution,
                              color=Sex)) +
   geom_point(aes(shape=Sex, color=Sex), size=3) +
-  facet_grid(Region ~ Period, scales = "free") + 
+  facet_grid(Region ~ Period, scales = "free") +
   scale_shape_manual(values=c(15,2))+
   coord_flip() +
   theme_classic() +
   geom_hline(yintercept = 0, linetype = "dashed", size= 1.5) +
   scale_color_manual(values = c("paleturquoise3", "paleturquoise3")) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 16),
         legend.position="bottom",
         strip.background = element_rect(fill = "grey40", color = "grey20", size = 1),
         strip.text = element_text(colour = "white"),
@@ -356,7 +359,7 @@ Figure_3 <- ggplot(Data_fig_3,
        x="")
 Figure_3
 ggsave(filename = "Figure 3.png",
-       path= "Figures/Main Figures/",
+       path = here::here("Figures/Main Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -365,17 +368,17 @@ ggsave(filename = "Figure 3.png",
 # ---------------------------------------------------------------------------- #
 
 Figure_4 <- ggplot(Data_fig_4,
-                   aes(x=reorder(ENTIDAD, -Contribution), 
+                   aes(x=reorder(ENTIDAD, -Contribution),
                        y=Contribution,
                        color=Sex)) +
   geom_point(aes(shape=Sex, color=Sex), size=3) +
-  facet_grid(Region ~ Period, scales = "free") + 
+  facet_grid(Region ~ Period, scales = "free") +
   scale_shape_manual(values=c(15,2))+
   coord_flip() +
   theme_classic() +
   geom_hline(yintercept = 0, linetype = "dashed", size= 1.5) +
   scale_color_manual(values = c("#FB6A4A", "#FB6A4A")) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 16),
         legend.position="bottom",
         strip.background = element_rect(fill = "grey40", color = "grey20", size = 1),
         strip.text = element_text(colour = "white"),
@@ -389,7 +392,7 @@ Figure_4 <- ggplot(Data_fig_4,
        x="")
 Figure_4
 ggsave(filename = "Figure 4.png",
-       path= "Figures/Main Figures/",
+       path = here::here("Figures/Main Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
@@ -399,17 +402,17 @@ ggsave(filename = "Figure 4.png",
 
 
 Figure_5 <- ggplot(Data_fig_5,
-                            aes(x=reorder(ENTIDAD, -Contribution), 
+                            aes(x=reorder(ENTIDAD, -Contribution),
                                 y=Contribution,
                                 color=Sex)) +
   geom_point(aes(shape=Sex, color=Sex), size=3) +
-  facet_grid(Region ~ Period, scales = "free") + 
+  facet_grid(Region ~ Period, scales = "free") +
   scale_shape_manual(values=c(15,2))+
   coord_flip() +
   geom_hline(yintercept = 0, linetype = "dashed", size= 1.5) +
   theme_classic() +
   scale_color_manual(values = c("#8C96C6", "#8C96C6")) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 16),
         legend.position="bottom",
         strip.background = element_rect(fill = "grey40", color = "grey20", size = 1),
         strip.text = element_text(colour = "white"),
@@ -422,7 +425,7 @@ Figure_5 <- ggplot(Data_fig_5,
        x="")
 Figure_5
 ggsave(filename = "Figure 5.png",
-       path= "Figures/Main Figures/",
+       path = here::here("Figures/Main Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 

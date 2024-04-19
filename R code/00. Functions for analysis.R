@@ -13,7 +13,8 @@ if (!require(pacman)) {install.packages("pacman")}
 pacman::p_load(tidyverse, data.table, foreign, magrittr,
                patchwork, hrbrthemes, here, ggdark, segmented,
                lmtest, scales, RColorBrewer, ggpubr, purrr,
-               ggridges, ggalluvial, DemoDecomp, parallel, tictoc)
+               ggridges, ggalluvial, DemoDecomp, parallel, tictoc,
+               sp, grid)
 
 # Constants
 

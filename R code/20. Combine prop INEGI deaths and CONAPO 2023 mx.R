@@ -13,7 +13,10 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/00. Functions for analysis.R") 
+
+pacman::p_load(here)
+
+source(here::here("R Code/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #     1. Open databases
@@ -23,7 +26,7 @@ source("R Code/00. Functions for analysis.R")
 # 1.1 Deaths INEGI
 # --------------------------
 
-INEGI <- get(load("Data/tmp/Data_deaths_1998_2021_adj.RData"))
+INEGI <- get(load(here::here("Data/tmp/Data_deaths_1998_2021_adj.RData")))
 
 table(INEGI$ENT_REGIS, INEGI$YEAR)
 # Transform to numeric
@@ -34,11 +37,11 @@ table(INEGI$ENTIDAD,INEGI$ENT_REGIS)
 table(INEGI$Age_group)
 
 # Data
-Data_5x1_adj <- INEGI 
+Data_5x1_adj <- INEGI
 
 Data_5x1_adj <- data.table(Data_5x1_adj)
 
-Data_5x1_adj <- Data_5x1_adj %>% 
+Data_5x1_adj <- Data_5x1_adj %>%
   filter(ENT_REGIS!=50)
 
 
@@ -52,49 +55,49 @@ Data_5x1_adj_National <- Data_5x1_adj[,list(Dx=sum(Dx)),
 
 
 
-Data_5x1_adj_National_wider <- Data_5x1_adj %>% 
-  group_by(SEX, YEAR, Age_group, CoD_ICD10) %>% 
-  summarize(Dx=sum(Dx)) %>% 
-  group_by(SEX, YEAR, Age_group) %>% 
-  mutate(Total_Dx = sum(Dx)) %>% 
-  ungroup() %>% 
-  mutate(Prop_mx = Dx/Total_Dx) %>% 
-  dplyr::select(-c(Dx, Total_Dx)) %>% 
+Data_5x1_adj_National_wider <- Data_5x1_adj %>%
+  group_by(SEX, YEAR, Age_group, CoD_ICD10) %>%
+  summarize(Dx=sum(Dx)) %>%
+  group_by(SEX, YEAR, Age_group) %>%
+  mutate(Total_Dx = sum(Dx)) %>%
+  ungroup() %>%
+  mutate(Prop_mx = Dx/Total_Dx) %>%
+  dplyr::select(-c(Dx, Total_Dx)) %>%
   pivot_wider(names_from = CoD_ICD10,
-              values_from = Prop_mx) 
+              values_from = Prop_mx)
 
 
 # ------------------------
 #. 1.1.2 State
 # ------------------------
-Data_5x1_adj_State_wider <- Data_5x1_adj %>% 
+Data_5x1_adj_State_wider <- Data_5x1_adj %>%
   group_by(SEX, YEAR, ENTIDAD,
-           Age_group, CoD_ICD10) %>% 
-  summarize(Dx=sum(Dx)) %>% 
-  group_by(SEX, YEAR, Age_group, ENTIDAD) %>% 
-  mutate(Total_Dx = sum(Dx)) %>% 
-  ungroup() %>% 
-  mutate(Prop_mx = Dx/Total_Dx) %>% 
-  dplyr::select(-c(Dx, Total_Dx)) %>% 
+           Age_group, CoD_ICD10) %>%
+  summarize(Dx=sum(Dx)) %>%
+  group_by(SEX, YEAR, Age_group, ENTIDAD) %>%
+  mutate(Total_Dx = sum(Dx)) %>%
+  ungroup() %>%
+  mutate(Prop_mx = Dx/Total_Dx) %>%
+  dplyr::select(-c(Dx, Total_Dx)) %>%
   pivot_wider(names_from = CoD_ICD10,
-              values_from = Prop_mx) 
+              values_from = Prop_mx)
 
 
 # --------------------------
 # 1.2 CONAPO mx
 # --------------------------
 
-CONAPO_mx <-get(load("Data/tmp/CONAPO_2023_1998_2021_aggregated.RData"))
+CONAPO_mx <-get(load(here::here("Data/tmp/CONAPO_2023_1998_2021_aggregated.RData")))
 
-CONAPO_mx_State_tomerge <- CONAPO_mx %>% 
-  filter(ENTIDAD!="República Mexicana") %>% 
+CONAPO_mx_State_tomerge <- CONAPO_mx %>%
+  filter(ENTIDAD!="República Mexicana") %>%
   mutate(mx = Dx/PSY) %>%
   rename(ENTIDAD_NAME = ENTIDAD,
          ENTIDAD = CVE_GEO)
 
-CONAPO_mx_National_tomerge <- CONAPO_mx %>% 
-  filter(ENTIDAD=="República Mexicana") %>% 
-  mutate(mx = Dx/PSY) 
+CONAPO_mx_National_tomerge <- CONAPO_mx %>%
+  filter(ENTIDAD=="República Mexicana") %>%
+  mutate(mx = Dx/PSY)
 
 # ---------------------------------------------------------------------------- #
 #    2. Combine databases
@@ -108,15 +111,15 @@ Data_analysis_National_CONAPO_2023 <- merge(CONAPO_mx_National_tomerge,
                                             Data_5x1_adj_National_wider,
                            by=c("YEAR","SEX", "Age_group"))
 
-Data_analysis_National_2023 <- Data_analysis_National_CONAPO_2023 %>% 
+Data_analysis_National_2023 <- Data_analysis_National_CONAPO_2023 %>%
   filter(YEAR==2015 | YEAR==2019 |
-           YEAR==2020 | YEAR==2021) %>% 
+           YEAR==2020 | YEAR==2021) %>%
   rename(ENTIDAD_NAME = ENTIDAD,
          ENTIDAD = CVE_GEO)
 
 
 
-save(Data_analysis_National_2023, file = "Data/Final/Data_analysis_CoD_National_CONAPO_2023.RData")
+save(Data_analysis_National_2023, file = here::here("Data/Final/Data_analysis_CoD_National_CONAPO_2023.RData"))
 
 
 # ------------------------
@@ -127,13 +130,13 @@ Data_analysis_State_CONAPO_2023 <- merge(CONAPO_mx_State_tomerge,
                                             Data_5x1_adj_State_wider,
                                             by=c("YEAR","SEX", "Age_group", "ENTIDAD"))
 
-Data_analysis_State_2023 <- Data_analysis_State_CONAPO_2023 %>% 
+Data_analysis_State_2023 <- Data_analysis_State_CONAPO_2023 %>%
   filter(YEAR==2015 | YEAR==2019 |
            YEAR==2020 | YEAR==2021)
 
 
 
-save(Data_analysis_State_2023, file = "Data/Final/Data_analysis_CoD_State_CONAPO_2023.RData")
+save(Data_analysis_State_2023, file = here::here("Data/Final/Data_analysis_CoD_State_CONAPO_2023.RData"))
 
 
 # ------------------------
@@ -141,8 +144,8 @@ save(Data_analysis_State_2023, file = "Data/Final/Data_analysis_CoD_State_CONAPO
 # ------------------------
 
 # 2.3.1 National
-save(Data_analysis_National_CONAPO_2023, file = "Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData")
+save(Data_analysis_National_CONAPO_2023, file = here::here("Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData"))
 
 # 2.3.2 State
-save(Data_analysis_State_CONAPO_2023, file = "Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData")
+save(Data_analysis_State_CONAPO_2023, file = here::here("Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData"))
 

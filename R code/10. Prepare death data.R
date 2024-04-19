@@ -13,14 +13,17 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/00. Functions for analysis.R") 
+
+pacman::p_load(here)
+
+source(here::here("R Code/00. Functions for analysis.R"))
 
 
 # ---------------------------------------------------------------------------- #
 #     1. Open databases
 # ---------------------------------------------------------------------------- #
 
-Data <- get(load("Data/tmp/Raw deaths 1990-2021.RData"))
+Data <- get(load(here::here("Data/tmp/Raw deaths 1990-2021.RData")))
 
 # ---------------------------------------------------------------------------- #
 #     2. Clean data
@@ -70,7 +73,7 @@ Data$ICD_number <- as.numeric(Data$ICD_number)
 #    10 = COVID
 
 
-Deaths_raw_svar_2 <- Data %>% 
+Deaths_raw_svar_2 <- Data %>%
   mutate(Age = case_when(Age_year==4 ~ Time_Age,
                          Age_year!=4 ~ 0),
          Age_missing = case_when(Age==998 ~ 1,
@@ -93,21 +96,21 @@ Deaths_raw_svar_2 <- Data %>%
                                   (ICD_number>=0 & ICD_number<=59)) |
                                  (ICD_Group=="Y" & (ICD_number>=40 & ICD_number<=99)) |
                                  (ICD_Group=="W" & (ICD_number>=0 & ICD_number<=49)) |
-                                 (ICD_Group=="V" & (ICD_number>=1 & ICD_number<=90))  ~ 5, # Other external       
+                                 (ICD_Group=="V" & (ICD_number>=1 & ICD_number<=90))  ~ 5, # Other external
                                ICD_Group=="J" & (ICD_number>=0 & ICD_number<=98) ~ 6,  # Respiratotry
                                (ICD_Group=="A" & (ICD_number>=0 & ICD_number<=99)) |
                                  (ICD_Group=="B" & (ICD_number>=0 & ICD_number<=99))  ~ 7, # Infectious diseases
                                ICD_Group=="K" & (ICD_number>=0 & ICD_number<=92) ~ 8,  # Digestive
                                ICD_Group=="P" & (ICD_number>=0 & ICD_number<=96) ~ 9,# Perinatal
                                (ICD_Group=="D" & (ICD_number>=0 & ICD_number<=48)) |
-                                 (ICD_Group=="E" & (ICD_number>=0 & ICD_number<=9)) | 
-                                 (ICD_Group=="E" & (ICD_number>=15 & ICD_number<=99)) | 
-                                 (ICD_Group=="F" & (ICD_number>=0 & ICD_number<=99)) | 
-                                 (ICD_Group=="G" & (ICD_number>=0 & ICD_number<=99)) | 
-                                 (ICD_Group=="H" & (ICD_number>=0 & ICD_number<=99)) | 
-                                 (ICD_Group=="I" & (ICD_number>=0 & ICD_number<=4)) | 
-                                 (ICD_Group=="I" & (ICD_number==10 | ICD_number==12))| 
-                                 (ICD_Group=="I" & (ICD_number>=14 & ICD_number<=20)) | 
+                                 (ICD_Group=="E" & (ICD_number>=0 & ICD_number<=9)) |
+                                 (ICD_Group=="E" & (ICD_number>=15 & ICD_number<=99)) |
+                                 (ICD_Group=="F" & (ICD_number>=0 & ICD_number<=99)) |
+                                 (ICD_Group=="G" & (ICD_number>=0 & ICD_number<=99)) |
+                                 (ICD_Group=="H" & (ICD_number>=0 & ICD_number<=99)) |
+                                 (ICD_Group=="I" & (ICD_number>=0 & ICD_number<=4)) |
+                                 (ICD_Group=="I" & (ICD_number==10 | ICD_number==12))|
+                                 (ICD_Group=="I" & (ICD_number>=14 & ICD_number<=20)) |
                                  (ICD_Group=="I" & (ICD_number>=52 & ICD_number<=59)) |
                                  (ICD_Group=="I" & (ICD_number>=70 & ICD_number<=99)) |
                                  (ICD_Group=="L" & (ICD_number>=0 & ICD_number<=99)) |
@@ -157,11 +160,11 @@ round(prop.table(table(Deaths_raw_svar_2$YEAR,
 Deaths_raw_svar_2 <- data.table(Deaths_raw_svar_2)
 
 Deaths_aggregated <- Deaths_raw_svar_2[,list(Dx = sum(n)),
-                                       by=list(YEAR,SEXO,ENT_REGIS, 
+                                       by=list(YEAR,SEXO,ENT_REGIS,
                                                Age_group, CoD_ICD10)]
 
 
-Deaths_aggregated_98_21 <- Deaths_aggregated %>% 
+Deaths_aggregated_98_21 <- Deaths_aggregated %>%
   filter(YEAR>=1998)
 
 sum(Deaths_aggregated_98_21$Dx)
@@ -176,8 +179,8 @@ Deaths_aggregated_98_21$SEXO <- factor(Deaths_aggregated_98_21$SEXO,
                                        levels = c(1,2,9),
                                        labels = c("Males", "Females", "Unknown"))
 
-# We transform the data to get 
-Deaths_aggregated_98_21_wider <- Deaths_aggregated_98_21 %>% 
+# We transform the data to get
+Deaths_aggregated_98_21_wider <- Deaths_aggregated_98_21 %>%
   pivot_wider(names_from = SEXO,
               values_from = Dx)
 
@@ -196,11 +199,11 @@ sum(Deaths_aggregated_98_21_wider$Unknown)
 # For cases where we don't have sex, and we have more Unkonw deaths, we
 # apply the average share of deaths by Year
 
-Deaths_aggregated_98_21_wider_2 <- Deaths_aggregated_98_21_wider %>% 
-  group_by(Age_group, YEAR, ENT_REGIS, CoD_ICD10) %>% 
+Deaths_aggregated_98_21_wider_2 <- Deaths_aggregated_98_21_wider %>%
+  group_by(Age_group, YEAR, ENT_REGIS, CoD_ICD10) %>%
   mutate(Total_M = sum(Males),
-         Total_F = sum(Females)) %>% 
-  ungroup() %>% 
+         Total_F = sum(Females)) %>%
+  ungroup() %>%
   mutate(Total_pop =  Total_M + Total_F,
          Average_SM = Total_M/Total_pop,
          Average_SF = Total_F/Total_pop,
@@ -219,7 +222,7 @@ Deaths_aggregated_98_21_wider_2 <- Deaths_aggregated_98_21_wider %>%
          New_Total = New_M + New_F,
          Check = New_Total-Total_u,
          Casos_especiales = case_when(Check==0 ~0,
-                                      Check>0~1)) 
+                                      Check>0~1))
 
 #we have a problem with the NA
 Deaths_aggregated_98_21_wider_2$New_M[is.na(Deaths_aggregated_98_21_wider_2$New_M)]<-0
@@ -230,24 +233,24 @@ sum(Deaths_aggregated_98_21_wider_2$New_Total)
 # N= 14,549,027
 
 # Base distribution de missing by Sex, age, and CoD
-Deaths_aggregated_98_21_distri <- Deaths_aggregated_98_21_wider_2 %>% 
+Deaths_aggregated_98_21_distri <- Deaths_aggregated_98_21_wider_2 %>%
   dplyr::select(YEAR,CoD_ICD10,Age_group, ENT_REGIS,
-                New_M, New_F,New_Total) %>% 
+                New_M, New_F,New_Total) %>%
   rename(FEMALES = New_F,
          MALES = New_M,
-         TOTAL = New_Total) %>% 
-  dplyr::select(-TOTAL) %>% 
+         TOTAL = New_Total) %>%
+  dplyr::select(-TOTAL) %>%
   pivot_longer(!c(YEAR, Age_group, CoD_ICD10, ENT_REGIS),
                names_to = "SEX",
-               values_to = "Dx") 
+               values_to = "Dx")
 
-  
+
 # Total with missing age 14,549,027
 sum(Deaths_aggregated_98_21_distri$Dx)
 # n= 14,476,476 with no missing age at death
 
 # Data set with only missing age
-Deaths_aggregated_98_21_age <- Deaths_aggregated_98_21_distri %>% 
+Deaths_aggregated_98_21_age <- Deaths_aggregated_98_21_distri %>%
   pivot_wider(names_from = Age_group,
               values_from = Dx)
 
@@ -280,10 +283,10 @@ Deaths_aggregated_98_21_age$`998`[is.na(Deaths_aggregated_98_21_age$`998`)] <- 0
 #  Resitribution of age
 # --------------------------------------------
 
-Deaths_aggregated_98_21_age_longer <- Deaths_aggregated_98_21_age %>% 
-  group_by(SEX, YEAR, ENT_REGIS, CoD_ICD10) %>% 
+Deaths_aggregated_98_21_age_longer <- Deaths_aggregated_98_21_age %>%
+  group_by(SEX, YEAR, ENT_REGIS, CoD_ICD10) %>%
   mutate(Total_Missing = sum(`998`),
-         Total_Age = sum(`0` + `1` + `5` + 
+         Total_Age = sum(`0` + `1` + `5` +
                            `10` + `15` +
                            `20` + `25` +
                            `30` + `35` +
@@ -293,21 +296,21 @@ Deaths_aggregated_98_21_age_longer <- Deaths_aggregated_98_21_age %>%
                            `70` + `75` +
                            `80` + `85` +
                            `90` + `95`),
-         Total_total = Total_Missing + Total_Age) %>% 
-  dplyr::select(-`998`) %>% 
+         Total_total = Total_Missing + Total_Age) %>%
+  dplyr::select(-`998`) %>%
   pivot_longer(!c(SEX, YEAR, ENT_REGIS, CoD_ICD10,
                   Total_Missing, Total_Age, Total_total),
                names_to = "Age_group",
-               values_to =  "Dx") %>% 
+               values_to =  "Dx") %>%
   mutate(Share_Age = Dx/Total_Age,
          Check = case_when(Total_Missing==0 & Total_Age==0 & Total_total==0 ~ 0,
                            Total_Missing!=0 | Total_Age!=0 | Total_total!=0 ~ 1),
          Dx_new = case_when(Check==0 ~ 0,
-                            Check==1 ~ Dx + (Share_Age*Total_Missing))) %>% 
-  group_by(SEX, YEAR, ENT_REGIS, CoD_ICD10) %>% 
+                            Check==1 ~ Dx + (Share_Age*Total_Missing))) %>%
+  group_by(SEX, YEAR, ENT_REGIS, CoD_ICD10) %>%
   mutate(Total_check = sum(Dx_new))
-  
-  
+
+
 sum(Deaths_aggregated_98_21_age_longer$Dx_new)
 # Total 14,549,027
 
@@ -315,13 +318,13 @@ sum(Deaths_aggregated_98_21_age_longer$Dx_new)
 #  Prepare final dataset
 # -------------------------------------------------
 
-Data_deaths_1998_2021_adj_pre <- Deaths_aggregated_98_21_age_longer %>% 
-  dplyr::select(YEAR, Age_group, SEX, CoD_ICD10, ENT_REGIS, Dx_new) %>% 
+Data_deaths_1998_2021_adj_pre <- Deaths_aggregated_98_21_age_longer %>%
+  dplyr::select(YEAR, Age_group, SEX, CoD_ICD10, ENT_REGIS, Dx_new) %>%
   rename(Dx = Dx_new)
 
 Data_deaths_1998_2021_adj_pre$Dx[is.na(Data_deaths_1998_2021_adj_pre$Dx)] <- 0
 
-Data_deaths_1998_2021_adj_pre <- data.table(Data_deaths_1998_2021_adj_pre)  
+Data_deaths_1998_2021_adj_pre <- data.table(Data_deaths_1998_2021_adj_pre)
 Data_deaths_1998_2021_adj_State <- Data_deaths_1998_2021_adj_pre[,list(Dx=sum(Dx)),
                                                                  by=list(Age_group,YEAR, ENT_REGIS,
                                                                          SEX, CoD_ICD10)]
@@ -347,16 +350,16 @@ Data_deaths_1998_2021_adj <- rbind(Data_deaths_1998_2021_adj_State,
 
 # We save the data
 save(Data_deaths_1998_2021_adj,
-     file = "Data/tmp/Data_deaths_1998_2021_adj.RData")
+     file = here::here("Data/tmp/Data_deaths_1998_2021_adj.RData"))
 
 
 
-Data_deaths_1998_2021_adj_check_national <- Data_deaths_1998_2021_adj_National %>% 
-  group_by(YEAR) %>% 
-  summarize(Dx_total = sum(Dx)) 
+Data_deaths_1998_2021_adj_check_national <- Data_deaths_1998_2021_adj_National %>%
+  group_by(YEAR) %>%
+  summarize(Dx_total = sum(Dx))
 
 
-Data_deaths_1998_2021_adj_check_state <- Data_deaths_1998_2021_adj_State %>% 
-  group_by(YEAR) %>% 
-  summarize(Dx_total = sum(Dx)) 
+Data_deaths_1998_2021_adj_check_state <- Data_deaths_1998_2021_adj_State %>%
+  group_by(YEAR) %>%
+  summarize(Dx_total = sum(Dx))
 

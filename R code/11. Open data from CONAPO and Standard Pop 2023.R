@@ -13,7 +13,10 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/00. Functions for analysis.R") 
+
+pacman::p_load(here)
+
+source(here::here("R Code/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #     1. Open databases
@@ -23,16 +26,16 @@ source("R Code/00. Functions for analysis.R")
 #  Exposure data
 #################################
 
-PSY <- read.csv("Data/CONAPO/2023/00_Pob_Mitad_1950_2070.csv", header = T, sep = ",", stringsAsFactors=FALSE)
+PSY <- read.csv(here::here("Data/CONAPO/2023/00_Pob_Mitad_1950_2070.csv"), header = T, sep = ",", stringsAsFactors=FALSE)
 
 colnames(PSY)[2] <- "Year"
 colnames(PSY)[5] <- "Age"
 
 #table(PSY$CVE_GEO)
 
-CONAPO_exp_98_2021_aggregated <- PSY %>% 
-  filter(Year>=1998 & Year<=2021) %>% 
-  filter(ENTIDAD!="Rep\x9cblica Mexicana") %>% 
+CONAPO_exp_98_2021_aggregated <- PSY %>%
+  filter(Year>=1998 & Year<=2021) %>%
+  filter(ENTIDAD!="Rep\x9cblica Mexicana") %>%
   mutate(Age_group = case_when(Age==0 ~ 0,
                                Age>=1 & Age<=4 ~ 1,
                                Age>=5 & Age<=9 ~ 5,
@@ -55,9 +58,9 @@ CONAPO_exp_98_2021_aggregated <- PSY %>%
                                Age>=90 & Age<=94 ~ 90,
                                Age>=95 & Age<=120 ~ 95),
          SEX = case_when(SEXO=="Hombres" ~ "MALES",
-                         SEXO=="Mujeres" ~ "FEMALES")) %>% 
-  rename(YEAR = Year) %>% 
-  group_by(YEAR,Age_group, SEX, ENTIDAD, CVE_GEO) %>% 
+                         SEXO=="Mujeres" ~ "FEMALES")) %>%
+  rename(YEAR = Year) %>%
+  group_by(YEAR,Age_group, SEX, ENTIDAD, CVE_GEO) %>%
   summarize(PSY=sum(POBLACION))
 
 
@@ -65,16 +68,16 @@ CONAPO_exp_98_2021_aggregated <- PSY %>%
 #  Deaths data
 #################################
 
-Dx <- read.csv("Data/CONAPO/2023/01_Defunciones_1950_2070.csv", header = T, sep = ",", stringsAsFactors=FALSE)
+Dx <- read.csv(here::here("Data/CONAPO/2023/01_Defunciones_1950_2070.csv"), header = T, sep = ",", stringsAsFactors=FALSE)
 
 colnames(Dx)[2] <- "Year"
 colnames(Dx)[6] <- "Age"
 
 table(Dx$ENTIDAD)
 
-CONAPO_dx_98_2021_aggregated <- Dx %>% 
-  filter(Year>=1998 & Year<=2021) %>% 
-  filter(ENTIDAD!="Rep\x9cblica Mexicana") %>% 
+CONAPO_dx_98_2021_aggregated <- Dx %>%
+  filter(Year>=1998 & Year<=2021) %>%
+  filter(ENTIDAD!="Rep\x9cblica Mexicana") %>%
   mutate(Age_group = case_when(Age==0 ~ 0,
                                Age>=1 & Age<=4 ~ 1,
                                Age>=5 & Age<=9 ~ 5,
@@ -97,9 +100,9 @@ CONAPO_dx_98_2021_aggregated <- Dx %>%
                                Age>=90 & Age<=94 ~ 90,
                                Age>=95 & Age<=120 ~ 95),
          SEX = case_when(SEXO=="Hombres" ~ "MALES",
-                         SEXO=="Mujeres" ~ "FEMALES")) %>% 
-  rename(YEAR = Year) %>% 
-  group_by(YEAR,Age_group, SEX, ENTIDAD, CVE_GEO) %>% 
+                         SEXO=="Mujeres" ~ "FEMALES")) %>%
+  rename(YEAR = Year) %>%
+  group_by(YEAR,Age_group, SEX, ENTIDAD, CVE_GEO) %>%
   summarize(Dx=sum(DEFUNCIONES))
 
 #################################
@@ -113,7 +116,7 @@ CONAPO_1998_2021 <- merge(CONAPO_exp_98_2021_aggregated,
                                "ENTIDAD", "CVE_GEO"))
 
 
-save(CONAPO_1998_2021, file = "Data/tmp/CONAPO_2023_1998_2021_aggregated.RData")
+save(CONAPO_1998_2021, file = here::here("Data/tmp/CONAPO_2023_1998_2021_aggregated.RData"))
 
 
 # ---------------------------------------------------------------------------- #
@@ -121,14 +124,14 @@ save(CONAPO_1998_2021, file = "Data/tmp/CONAPO_2023_1998_2021_aggregated.RData")
 # ---------------------------------------------------------------------------- #
 
 # We will use total population of 2010 as standard population
-CONAPO_StandarPopulation <- CONAPO_exp_98_2021_aggregated %>% 
-  group_by(YEAR,Age_group) %>% 
-  summarize(Total=sum(PSY)) %>% 
-  filter(YEAR==2010) %>% 
+CONAPO_StandarPopulation <- CONAPO_exp_98_2021_aggregated %>%
+  group_by(YEAR,Age_group) %>%
+  summarize(Total=sum(PSY)) %>%
+  filter(YEAR==2010) %>%
   mutate(MEX = sum(Total),
-         Prop = Total/MEX) %>% 
-  dplyr::select(-c(MEX, Total)) 
+         Prop = Total/MEX) %>%
+  dplyr::select(-c(MEX, Total))
 
 
-save(CONAPO_StandarPopulation, file = "Data/tmp/CONAPO_StandarPopulation.RData")
+save(CONAPO_StandarPopulation, file = here::here("Data/tmp/CONAPO_StandarPopulation.RData"))
 

@@ -13,7 +13,10 @@
 
 # To clear everything in R, before start the analysis and open functions
 rm(list = ls())
-source("R Code/00. Functions for analysis.R") 
+
+pacman::p_load(here)
+
+source(here::here("R Code/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #     0. Function to open all datasets
@@ -21,26 +24,26 @@ source("R Code/00. Functions for analysis.R")
 
 
 # Function to open files
-read_Data <- function(file){
-  
+read_Data <- function(file) {
+
   data <- read.dbf(file)
   ifelse(data$ANIO_REGIS<98,
-         
-         data_set <- data %>% 
+
+         data_set <- data %>%
            dplyr::select(ANIO_OCUR, ANIO_REGIS, SEXO, EDAD,
                          ANIO_NACIM,ENT_RESID,ENT_REGIS,
-                         CAUSA_DEF, LISTA_BAS) %>% 
+                         CAUSA_DEF, LISTA_BAS) %>%
            rename(YEAR = ANIO_REGIS,
                   LISTA = LISTA_BAS),
-         data_set <- data %>% 
+         data_set <- data %>%
            dplyr::select(ANIO_OCUR, ANIO_REGIS, SEXO, EDAD,
                          ANIO_NACIM,ENT_RESID,ENT_REGIS,
-                         CAUSA_DEF, LISTA_MEX) %>% 
+                         CAUSA_DEF, LISTA_MEX) %>%
            rename(YEAR = ANIO_REGIS,
                   LISTA = LISTA_MEX)
   )
   return(data_set)
-  
+
 }
 
 # ---------------------------------------------------------------------------- #
@@ -48,10 +51,10 @@ read_Data <- function(file){
 # ---------------------------------------------------------------------------- #
 
 # Create a list with files names
-file.names <- list.files("Data/INEGI")
+file.names <- list.files(here::here("Data/INEGI"))
 # Open files by applying the function
 Deaths_1990_2021 <- do.call(rbind, lapply(file.names, read_Data))
 
 # We save the data
-save(Deaths_1990_2021, file = "Data/tmp/Raw deaths 1990-2021.RData")
+save(Deaths_1990_2021, file = here::here("Data/tmp/Raw deaths 1990-2021.RData"))
 

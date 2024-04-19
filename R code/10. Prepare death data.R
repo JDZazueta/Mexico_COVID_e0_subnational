@@ -125,28 +125,11 @@ Deaths_raw_svar_2 <- Data %>%
                                  (ICD_Group=="Y" & (ICD_number>=40 & ICD_number<=99)) |
                                  (ICD_Group=="Z" & (ICD_number>=0 & ICD_number<=99)) ~ 11
          ),
-         Age_group = case_when(Age==0 ~ 0,
-                               Age>=1 & Age<=4 ~ 1,
-                               Age>=5 & Age<=9 ~ 5,
-                               Age>=10 & Age<=14 ~ 10,
-                               Age>=15 & Age<=19 ~ 15,
-                               Age>=20 & Age<=24 ~ 20,
-                               Age>=25 & Age<=29 ~ 25,
-                               Age>=30 & Age<=34 ~ 30,
-                               Age>=35 & Age<=39 ~ 35,
-                               Age>=40 & Age<=44 ~ 40,
-                               Age>=45 & Age<=49 ~ 45,
-                               Age>=50 & Age<=54 ~ 50,
-                               Age>=55 & Age<=59 ~ 55,
-                               Age>=60 & Age<=64 ~ 60,
-                               Age>=65 & Age<=69 ~ 65,
-                               Age>=70 & Age<=74 ~ 70,
-                               Age>=75 & Age<=79 ~ 75,
-                               Age>=80 & Age<=84 ~ 80,
-                               Age>=85 & Age<=89 ~ 85,
-                               Age>=90 & Age<=94 ~ 90,
-                               Age>=95 & Age<=120 ~ 95,
-                               Age==998 ~ 998),
+         Age_group = case_when(Age == 0 ~ 0,
+                               between(Age, 1, 4) ~ 1,
+                               between(Age, 5, 94) ~ (age %/% 5) * 5,
+                               between(Age, 95, 120) ~ 95,
+                               Age == 998 ~ 998),
          n = 1)
 
 Deaths_raw_svar_2$CoD_ICD10[is.na(Deaths_raw_svar_2$CoD_ICD10)] <- 0

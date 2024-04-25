@@ -14,7 +14,7 @@ pacman::p_load(tidyverse, data.table, foreign, magrittr,
                patchwork, hrbrthemes, here, ggdark, segmented,
                lmtest, scales, RColorBrewer, ggpubr, purrr,
                ggridges, ggalluvial, DemoDecomp, parallel, tictoc,
-               sp, grid)
+               sp, grid, stringr)
 
 # Constants
 
@@ -42,6 +42,14 @@ Color_big_groups <- c("paleturquoise3", "#FB6A4A", "#8C96C6", "red4",
                       "Grey80", "Grey40")
 
 
+# functions
+
+padnum <- function(numbers) {
+
+    str_pad(numbers, width = 2, side = "left", pad = "0")
+
+}
+
 
 #display.brewer.pal(n = 10, name = 'RdBu')
 #brewer.pal(n = 10, name = "RdBu")
@@ -51,7 +59,7 @@ Color_big_groups <- c("paleturquoise3", "#FB6A4A", "#8C96C6", "red4",
 #     2 = Neoplasms	C00-C97
 #     3 = Diabetes	E10-E14
 #     4 = Homicides and other violent causes with undetermined intention	X85-Y09, Y10-Y34, Y35-Y36
-#     5 = Other external causes (including traffic accidents, injuries and suicide)	V01-V89, V90-X59, X60-X84
+#     5 = Other external causes (including traffic accidents, injuries and suicide)	W00-W99, V01-V89, V90-X59, X60-X84, Y40-Y99
 #     6 = Respiratory Diseases	J00-J98
 #     7 = Infectious Diseases	A00-B99
 #     8 = Digestive Diseases	K00-K92

@@ -48,9 +48,10 @@ Data$Time_Age <- as.numeric(Data$Time_Age)
 # To create causes of death we need to separate to construct two variables for easy
 # manipulation
 
-Data$ICD_Group <- substr(Data$CAUSA_DEF,0,1)
-Data$ICD_number <- substr(Data$CAUSA_DEF,2,3)
+Data$ICD_Group <- substr(Data$CAUSA_DEF, 0, 1)
+Data$ICD_number <- substr(Data$CAUSA_DEF, 2, 3)
 Data$ICD_number <- as.numeric(Data$ICD_number)
+Data$ICD_base <- substr(Data$CAUSA_DEF, 0, 3)
 
 
 # We create the variables
@@ -65,13 +66,27 @@ Data$ICD_number <- as.numeric(Data$ICD_number)
 #     2 = Neoplasms	C00-C97
 #     3 = Diabetes	E10-E14
 #     4 = Homicides and other violent causes with undetermined intention	X85-Y09, Y10-Y34, Y35-Y36
-#     5 = Other external causes (including traffic accidents, injuries and suicide)	V01-V89, V90-X59, X60-X84
+#     5 = Other external causes (including traffic accidents, injuries and suicide)	W00-W99, V01-V89, V90-X59, X60-X84, Y40-Y99
 #     6 = Respiratory Diseases	J00-J98
 #     7 = Infectious Diseases	A00-B99
 #     8 = Digestive Diseases	K00-K92
 #     9 = Conditions originated in the perinatal period	P00-P96
 #    10 = COVID
 
+circulatory <- str_c("I", padnum(c(5:9, 11, 13, 21:51, 60:69)))
+neoplasms <- str_c("C", padnum(0:97))
+diabetes <- str_c("E", padnum(10:14))
+homicides <- c(str_c("X", padnum(85:99)),
+               str_c("Y", padnum(1:36)))
+other_external <- c(str_c("X", padnum(0:84)),
+                    str_c("Y", padnum(40:99)),
+                    str_c("W", padnum(0:99)),
+                    str_c("V", padnum(1:99)))
+respiratory <- str_c("J", padnum(0:98))
+infectious <- c(str_c("A", padnum(0:99)),
+                str_c("B", padnum(0:99)))
+digestive <- str_c("K", padnum(0:92))
+perinatal <- str_c("P", padnum(0:96))
 
 Deaths_raw_svar_2 <- Data %>%
   mutate(Age = case_when(Age_year==4 ~ Time_Age,
@@ -82,49 +97,17 @@ Deaths_raw_svar_2 <- Data %>%
          Dif_age_age_birth = Age - Age_birth,
          Check_age_birth = case_when(Dif_age_age_birth>=-1 & Dif_age_age_birth<=1 ~ 0,
                                      Dif_age_age_birth<=-2 | Dif_age_age_birth<=1 ~ 1),
-         CoD_ICD10 = case_when(LISTA=="06T" ~ 10,  # COVID,
-                               ICD_Group=="I" &
-                                 ((ICD_number>=5 & ICD_number<=9) | ICD_number==11 |
-                                    ICD_number==13 |
-                                    (ICD_number>=21 & ICD_number<=51) |
-                                    (ICD_number>=60 & ICD_number<=69) ) ~ 1, # Circulatory
-                               ICD_Group=="C" & (ICD_number>=0 & ICD_number<=97) ~ 2,  # Neoplasm
-                               ICD_Group=="E" & (ICD_number>=10 & ICD_number<=14) ~ 3,  # Diabetes
-                               (ICD_Group=="X" & (ICD_number>=85 & ICD_number<=99)) |
-                                 (ICD_Group=="Y" & (ICD_number>=1 & ICD_number<=36)) ~4, # Homicides and other violent causes with undetermined intention
-                               (ICD_Group=="X" & (ICD_number>=60 & ICD_number<=84) |
-                                  (ICD_number>=0 & ICD_number<=59)) |
-                                 (ICD_Group=="Y" & (ICD_number>=40 & ICD_number<=99)) |
-                                 (ICD_Group=="W" & (ICD_number>=0 & ICD_number<=49)) |
-                                 (ICD_Group=="V" & (ICD_number>=1 & ICD_number<=90))  ~ 5, # Other external
-                               ICD_Group=="J" & (ICD_number>=0 & ICD_number<=98) ~ 6,  # Respiratotry
-                               (ICD_Group=="A" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="B" & (ICD_number>=0 & ICD_number<=99))  ~ 7, # Infectious diseases
-                               ICD_Group=="K" & (ICD_number>=0 & ICD_number<=92) ~ 8,  # Digestive
-                               ICD_Group=="P" & (ICD_number>=0 & ICD_number<=96) ~ 9,# Perinatal
-                               (ICD_Group=="D" & (ICD_number>=0 & ICD_number<=48)) |
-                                 (ICD_Group=="E" & (ICD_number>=0 & ICD_number<=9)) |
-                                 (ICD_Group=="E" & (ICD_number>=15 & ICD_number<=99)) |
-                                 (ICD_Group=="F" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="G" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="H" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="I" & (ICD_number>=0 & ICD_number<=4)) |
-                                 (ICD_Group=="I" & (ICD_number==10 | ICD_number==12))|
-                                 (ICD_Group=="I" & (ICD_number>=14 & ICD_number<=20)) |
-                                 (ICD_Group=="I" & (ICD_number>=52 & ICD_number<=59)) |
-                                 (ICD_Group=="I" & (ICD_number>=70 & ICD_number<=99)) |
-                                 (ICD_Group=="L" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="M" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="N" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="O" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="Q" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="R" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="S" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="T" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="W" & (ICD_number>=0 & ICD_number<=99)) |
-                                 (ICD_Group=="Y" & (ICD_number>=40 & ICD_number<=99)) |
-                                 (ICD_Group=="Z" & (ICD_number>=0 & ICD_number<=99)) ~ 11
-         ),
+         CoD_ICD10 = case_when(LISTA == "06T" ~ 10, # COVID
+                               ICD_base %in% circulatory ~ 1,
+                               ICD_base %in% neoplasms ~ 2,
+                               ICD_base %in% diabetes ~ 3,
+                               ICD_base %in% homicides ~ 4,
+                               ICD_base %in% other_external ~ 5,
+                               ICD_base %in% respiratory ~ 6,
+                               ICD_base %in% infectious ~ 7,
+                               ICD_base %in% digestive ~ 8,
+                               ICD_base %in% perinatal ~ 9,
+                               TRUE ~ 11), # all other causes
          Age_group = case_when(Age == 0 ~ 0,
                                between(Age, 1, 4) ~ 1,
                                between(Age, 5, 94) ~ (age %/% 5) * 5,

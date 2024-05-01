@@ -16,7 +16,7 @@ rm(list = ls())
 
 pacman::p_load(here)
 
-source(here::here("R Code/Final/00. Functions for analysis.R"))
+source(here::here("R Code/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #  1. Open Data
@@ -26,13 +26,13 @@ source(here::here("R Code/Final/00. Functions for analysis.R"))
 #  Data
 # -------------------------------- #
 
-Data_state <- get(load("R Code/Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData"))
+Data_state <- get(load("Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData"))
 
 
-Data_National <- get(load("R Code/Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData"))
+Data_National <- get(load("Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData"))
 
 # Open data of standard population
-Standard_pop <- get(load("R Code/Data/tmp/CONAPO_StandarPopulation.RData"))
+Standard_pop <- get(load("Data/tmp/CONAPO_StandarPopulation.RData"))
 
 
 # ---------------------------------------------------------------------------- #
@@ -112,5 +112,5 @@ MEX_ASMR_national_states <- Data_analysis %>%
             SDR_diabetes=sum(ASDiabetes)*100000,
             SDR_COVID = sum(ASCOVID)*100000)
   
-save(MEX_ASMR_national_states, file = "R Code/Data/Final/MEX_ASMR.RData")
+save(MEX_ASMR_national_states, file = "Data/Final/MEX_ASMR.RData")
 

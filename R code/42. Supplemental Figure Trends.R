@@ -151,10 +151,10 @@ ggsave(filename = "Supplemental Figure 1.png",
 
 
 # ----------------------------------------
-# Supplemental Figure 6. Life expectancy losses between 2019¬–2021, by sex, state, and region.
+# Supplemental Figure 2. Life expectancy losses between 2019¬–2021, by sex, state, and region.
 # ----------------------------------------
 
-Figure_SM_6 <- ggplot(Data_SM_figure_1,
+Figure_SM_2 <- ggplot(Data_SM_figure_1,
                       mapping = aes(x=reorder(ENTIDAD,-Change),
                        y=Change)) +
   geom_point(size = 3.5) +
@@ -176,8 +176,8 @@ Figure_SM_6 <- ggplot(Data_SM_figure_1,
   labs(color = "Year",
        y= bquote("Losses in fife expectancy at birth " ~ e[0] ~ ""),
        x="")
-Figure_SM_6
-ggsave(filename = "Supplemental Figure 6.png",
+Figure_SM_2
+ggsave(filename = "Supplemental Figure 2.png",
        path = here::here("Figures/Supplementary Figures/"),
        dpi = 320, width = 10, height = 12,
        bg = "transparent")

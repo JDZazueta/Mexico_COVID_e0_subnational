@@ -204,166 +204,162 @@ e0frommxch <- function(mxcvec){
 # ---------------------------------------------------------------------------- #
 
 Decomp_function <- function(data, Age_group, year, cause, mx){
-
+  
   # -- Create subsets
   Data_2015 <- data[year==2015]
   Data_2019 <- data[year==2019]
   Data_2020 <- data[year==2020]
   Data_2021 <- data[year==2021]
-
+  
   # -- Arrange those subsets
-
+  
   # -- Data 2015
-  Matrix_2015 <- Data_2015 %>%
+  Matrix_2015 <- Data_2015 %>% 
     pivot_wider(names_from = cause,
-                values_from = mx) %>%
-    dplyr::select(mx_0,
-                  mx_1, mx_2, mx_3, mx_4, mx_5,
-                  mx_6, mx_7, mx_8, mx_9, mx_10) %>%
+                values_from = mx) %>% 
+    dplyr::select(mx_circulatory, mx_diabetes, mx_digestive, mx_homicides, mx_infectious,
+                  mx_neoplasms, mx_other_external, mx_perinatal, mx_respiratory, mx_covid, mx_all_other) %>% 
     as.matrix()
-
+  
   # -- Data 2019
-  Matrix_2019 <- Data_2019 %>%
+  Matrix_2019 <- Data_2019 %>% 
     pivot_wider(names_from = cause,
-                values_from = mx) %>%
-    dplyr::select(mx_0,
-                  mx_1, mx_2, mx_3, mx_4, mx_5,
-                  mx_6, mx_7, mx_8, mx_9, mx_10) %>%
+                values_from = mx) %>% 
+    dplyr::select(mx_circulatory, mx_diabetes, mx_digestive, mx_homicides, mx_infectious,
+                  mx_neoplasms, mx_other_external, mx_perinatal, mx_respiratory, mx_covid, mx_all_other) %>% 
     as.matrix()
-
+  
   # -- Data 2019
-  Matrix_2020 <- Data_2020 %>%
+  Matrix_2020 <- Data_2020 %>% 
     pivot_wider(names_from = cause,
-                values_from = mx) %>%
-    dplyr::select(mx_0,
-                  mx_1, mx_2, mx_3, mx_4, mx_5,
-                  mx_6, mx_7, mx_8, mx_9, mx_10) %>%
+                values_from = mx) %>% 
+    dplyr::select(mx_circulatory, mx_diabetes, mx_digestive, mx_homicides, mx_infectious,
+                  mx_neoplasms, mx_other_external, mx_perinatal, mx_respiratory, mx_covid, mx_all_other) %>% 
     as.matrix()
-
-
+  
+  
   # -- Data 2021
-  Matrix_2021 <- Data_2021 %>%
+  Matrix_2021 <- Data_2021 %>% 
     pivot_wider(names_from = cause,
-                values_from = mx) %>%
-    dplyr::select(mx_0,
-                  mx_1, mx_2, mx_3, mx_4, mx_5,
-                  mx_6, mx_7, mx_8, mx_9, mx_10) %>%
+                values_from = mx) %>% 
+    dplyr::select(mx_circulatory, mx_diabetes, mx_digestive, mx_homicides, mx_infectious,
+                  mx_neoplasms, mx_other_external, mx_perinatal, mx_respiratory, mx_covid, mx_all_other) %>% 
     as.matrix()
-
-
+  
+  
   # -- Decomposition by period
-
+  
   #########################
   # 2015 - 2019
   #########################
-
+  
   Decomp_result_15_19 <- horiuchi(func = e0frommxch,
                                   pars1 = c(Matrix_2015),
                                   pars2 = c(Matrix_2019),
                                   N = 100)
-
-  dim(Decomp_result_15_19) <- dim(Matrix_2015)
-
-
+  
+  dim(Decomp_result_15_19) <- dim(Matrix_2015) 
+  
+  
   Decomp_result_15_19 <- data.frame(Decomp_result_15_19)
-  colnames(Decomp_result_15_19) <- cause_names
+  colnames(Decomp_result_15_19) <- cause_names_final
   Decomp_result_15_19$Age <- c(0,1,seq(5,95,5))
-  Decomp_result_15_19 <- gather(data = Decomp_result_15_19,key =
+  Decomp_result_15_19 <- gather(data = Decomp_result_15_19,key = 
                                   Cause,value = Contribution,-Age)
   Decomp_result_15_19 <- data.table(Decomp_result_15_19)
   Decomp_result_15_19$Period <- "2015-2019"
-
+  
   #########################
   # 2019 - 2020
   #########################
-
+  
   Decomp_result_19_20 <- horiuchi(func = e0frommxch,
                                   pars1 = c(Matrix_2019),
                                   pars2 = c(Matrix_2020),
                                   N = 100)
-
-  dim(Decomp_result_19_20) <- dim(Matrix_2019)
-
-
+  
+  dim(Decomp_result_19_20) <- dim(Matrix_2019) 
+  
+  
   Decomp_result_19_20 <- data.frame(Decomp_result_19_20)
-  colnames(Decomp_result_19_20) <- cause_names
+  colnames(Decomp_result_19_20) <- cause_names_final
   Decomp_result_19_20$Age <- c(0,1,seq(5,95,5))
-  Decomp_result_19_20 <- gather(data = Decomp_result_19_20,key =
+  Decomp_result_19_20 <- gather(data = Decomp_result_19_20,key = 
                                   Cause,value = Contribution,-Age)
   Decomp_result_19_20 <- data.table(Decomp_result_19_20)
   Decomp_result_19_20$Period <- "2019-2020"
-
-
+  
+  
   #########################
   # 2020 - 2021
   #########################
-
+  
   Decomp_result_20_21 <- horiuchi(func = e0frommxch,
                                   pars1 = c(Matrix_2020),
                                   pars2 = c(Matrix_2021),
                                   N = 100)
-
-  dim(Decomp_result_20_21) <- dim(Matrix_2020)
-
-
+  
+  dim(Decomp_result_20_21) <- dim(Matrix_2020) 
+  
+  
   Decomp_result_20_21 <- data.frame(Decomp_result_20_21)
-  colnames(Decomp_result_20_21) <- cause_names
+  colnames(Decomp_result_20_21) <- cause_names_final
   Decomp_result_20_21$Age <- c(0,1,seq(5,95,5))
-  Decomp_result_20_21 <- gather(data = Decomp_result_20_21,key =
+  Decomp_result_20_21 <- gather(data = Decomp_result_20_21,key = 
                                   Cause,value = Contribution,-Age)
   Decomp_result_20_21 <- data.table(Decomp_result_20_21)
   Decomp_result_20_21$Period <- "2020-2021"
-
+  
   #########################
   # 2015 - 2021
   #########################
-
+  
   Decomp_result_15_21 <- horiuchi(func = e0frommxch,
                                   pars1 = c(Matrix_2015),
                                   pars2 = c(Matrix_2021),
                                   N = 100)
-
-  dim(Decomp_result_15_21) <- dim(Matrix_2015)
-
-
+  
+  dim(Decomp_result_15_21) <- dim(Matrix_2015) 
+  
+  
   Decomp_result_15_21 <- data.frame(Decomp_result_15_21)
-  colnames(Decomp_result_15_21) <- cause_names
+  colnames(Decomp_result_15_21) <- cause_names_final
   Decomp_result_15_21$Age <- c(0,1,seq(5,95,5))
-  Decomp_result_15_21 <- gather(data = Decomp_result_15_21,key =
+  Decomp_result_15_21 <- gather(data = Decomp_result_15_21,key = 
                                   Cause,value = Contribution,-Age)
   Decomp_result_15_21 <- data.table(Decomp_result_15_21)
   Decomp_result_15_21$Period <- "2015-2021"
-
+  
   #########################
   # 2019 - 2021
   #########################
-
+  
   Decomp_result_19_21 <- horiuchi(func = e0frommxch,
                                   pars1 = c(Matrix_2019),
                                   pars2 = c(Matrix_2021),
                                   N = 100)
-
-  dim(Decomp_result_19_21) <- dim(Matrix_2019)
-
-
+  
+  dim(Decomp_result_19_21) <- dim(Matrix_2019) 
+  
+  
   Decomp_result_19_21 <- data.frame(Decomp_result_19_21)
-  colnames(Decomp_result_19_21) <- cause_names
+  colnames(Decomp_result_19_21) <- cause_names_final
   Decomp_result_19_21$Age <- c(0,1,seq(5,95,5))
-  Decomp_result_19_21 <- gather(data = Decomp_result_19_21,key =
+  Decomp_result_19_21 <- gather(data = Decomp_result_19_21,key = 
                                   Cause,value = Contribution,-Age)
   Decomp_result_19_21 <- data.table(Decomp_result_19_21)
   Decomp_result_19_21$Period <- "2019-2021"
-
-
+  
+  
   # -- Combine decomp outputs
-
+  
   Decomp_result <- rbind(Decomp_result_15_19,
                          Decomp_result_19_20,
                          Decomp_result_20_21,
                          Decomp_result_15_21,
                          Decomp_result_19_21)
-
+  
   return(Decomp_result)
-
+  
 }
 

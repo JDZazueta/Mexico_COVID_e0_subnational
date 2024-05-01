@@ -17,7 +17,7 @@ rm(list = ls())
 
 pacman::p_load(here)
 
-source(here::here("R Code/Final/00. Functions for analysis.R"))
+source(here::here("R Code/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #  1. Open Data
@@ -27,10 +27,10 @@ source(here::here("R Code/Final/00. Functions for analysis.R"))
 #  Data
 # -------------------------------- #
 
-Data_state <- get(load("R Code/Data/Final/Data_analysis_CoD_State_CONAPO_2023.RData"))
+Data_state <- get(load("Data/Final/Data_analysis_CoD_State_CONAPO_2023.RData"))
 
 
-Data_National <- get(load("R Code/Data/Final/Data_analysis_CoD_National_CONAPO_2023.RData"))
+Data_National <- get(load("Data/Final/Data_analysis_CoD_National_CONAPO_2023.RData"))
 
 # ---------------------------------------------------------------------------- #
 #  2. Combine data
@@ -279,5 +279,5 @@ Decomp_e0_results <- Data_analysis_longer[, Decomp_function(.SD,
 
 #toc()
 save(Decomp_e0_results,
-     file = "R Code/Data/Final/Decomp_e0_results_state.RData")
+     file = "Data/Final/Decomp_e0_results_state.RData")
 

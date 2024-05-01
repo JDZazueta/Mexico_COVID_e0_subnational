@@ -162,11 +162,11 @@ Data_SMFig_Amenable <- Data_Supplemental_CoD_analysis %>%
 # ---------------------------------------------------------------------------- #
 
 # ----------------------------------------
-# SM 2 The contribution of homicides and violence to life expectancy changes in
+# SM 3 The contribution of homicides and violence to life expectancy changes in
 #       different periods by state and sex, 2015–2021.
 # ----------------------------------------
 
-Figure_SM_2 <- ggplot(Data_SMFig_Violence,
+Figure_SM_3 <- ggplot(Data_SMFig_Violence,
                     aes(x=reorder(ENTIDAD, -Contribution),
                         y=Contribution,
                         color=Sex)) +
@@ -190,20 +190,20 @@ Figure_SM_2 <- ggplot(Data_SMFig_Violence,
        color="Sex",
        y= bquote("Contribution to life expectancy change" ~e[0]~ "(in years)"),
        x="")
-Figure_SM_2
-ggsave(filename = "Supplemental Figure 2.png",
+Figure_SM_3
+ggsave(filename = "Supplemental Figure 3.png",
        path = here::here("Figures/Supplementary Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
 
 # ----------------------------------------
-# SM 3 The contribution of COVID-19 to life expectancy changes in
+# SM 4 The contribution of COVID-19 to life expectancy changes in
 #       different periods by state and sex, 2019–2021.
 # ----------------------------------------
 
 
-Figure_SM_3 <- ggplot(Data_SMFig_COVID,
+Figure_SM_4 <- ggplot(Data_SMFig_COVID,
                     aes(x=reorder(ENTIDAD, -Contribution),
                         y=Contribution,
                         color=Sex)) +
@@ -226,18 +226,18 @@ Figure_SM_3 <- ggplot(Data_SMFig_COVID,
   labs(shape = "Sex",
        y= bquote("Contribution to life expectancy change" ~e[0]~ "(in years)"),
        x="")
-Figure_SM_3
-ggsave(filename = "Supplemental Figure 3.png",
+Figure_SM_4
+ggsave(filename = "Supplemental Figure 4.png",
        path = here::here("Figures/Supplementary Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
 # ----------------------------------------
-# SM 4 The contribution of diabetes to life expectancy changes in
+# SM 5 The contribution of diabetes to life expectancy changes in
 #       different periods by state and sex, 2015–2021.
 # ----------------------------------------
 
-Figure_SM_4 <- ggplot(Data_SMFig_Diabetes,
+Figure_SM_5 <- ggplot(Data_SMFig_Diabetes,
                     aes(x=reorder(ENTIDAD, -Contribution),
                         y=Contribution,
                         color=Sex)) +
@@ -261,18 +261,18 @@ Figure_SM_4 <- ggplot(Data_SMFig_Diabetes,
   labs(shape = "Sex",
        y= bquote("Contribution to life expectancy change" ~e[0]~ "(in years)"),
        x="")
-Figure_SM_4
-ggsave(filename = "Supplemental Figure 4.png",
+Figure_SM_5
+ggsave(filename = "Supplemental Figure 5.png",
        path = here::here("Figures/Supplementary Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")
 
 # ----------------------------------------
-# SM 5 The contribution of causes amenable to healthcare to life expectancy changes in
+# SM 6 The contribution of causes amenable to healthcare to life expectancy changes in
 #       different periods by state and sex, 2015–2021.
 # ----------------------------------------
 
-Figure_SM_5 <- ggplot(Data_SMFig_Amenable,
+Figure_SM_6 <- ggplot(Data_SMFig_Amenable,
                       aes(x=reorder(ENTIDAD, -Contribution),
                           y=Contribution,
                           color=Sex)) +
@@ -296,8 +296,8 @@ Figure_SM_5 <- ggplot(Data_SMFig_Amenable,
   labs(shape = "Sex",
        y= bquote("Contribution to life expectancy change" ~e[0]~ "(in years)"),
        x="")
-Figure_SM_5
-ggsave(filename = "Supplemental Figure 5.png",
+Figure_SM_6
+ggsave(filename = "Supplemental Figure 6.png",
        path = here::here("Figures/Supplementary Figures/"),
        dpi = 320, width = 8, height = 9,
        bg = "transparent")

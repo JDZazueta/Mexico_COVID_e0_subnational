@@ -36,6 +36,10 @@ cause_names_order <- c("Circulatory","COVID", "Diabetes",
                        "Other externals", "Perinatal",
                        "Respiratory","Rest of causes")
 
+cause_names_final <-  c("Circulatory", "Diabetes", "Digestive", "Homicides & Violence",
+                        "Infectious diseases", "Neoplasm", "Other externals","Perinatal",
+                        "Respiratory", "COVID", "Rest of causes")
+
 
 
 Color_big_groups <- c("paleturquoise3", "#FB6A4A", "#8C96C6", "red4",

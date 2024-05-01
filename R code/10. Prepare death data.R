@@ -17,14 +17,14 @@ rm(list = ls())
 
 pacman::p_load(here)
 
-source(here::here("R Code/Final/00. Functions for analysis.R"))
+source(here::here("R Code/00. Functions for analysis.R"))
 
 
 # ---------------------------------------------------------------------------- #
 #     1. Open databases
 # ---------------------------------------------------------------------------- #
 
-Data <- get(load(here::here("R Code/Data/tmp/Raw deaths 1990-2021.RData")))
+Data <- get(load(here::here("Data/tmp/Raw deaths 1990-2021.RData")))
 
 # ---------------------------------------------------------------------------- #
 #     2. Clean data

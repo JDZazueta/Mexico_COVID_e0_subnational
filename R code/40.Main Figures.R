@@ -216,14 +216,18 @@ Data_fig_5 <- Data_figure_2_5 %>%
 #            and period, 2015–2021.
 # ---------------------------------------------------------------------------- #
 
-Data_Figure_1_total <- Data_Figure_1 %>%
-  group_by(Sex, Period) %>%
-  summarise(Contribution=sum(Contribution))
+
+Data_Figure_1_total <- Data_Figure_1 %>% 
+  group_by(Sex, Period, Groups) %>% 
+  summarise(Contribution=sum(Contribution)) %>% 
+  group_by(Sex, Period) %>% 
+  mutate(Total = round(sum(Contribution),2),
+         Rela = round(Contribution/Total*100,2))
 
 # Text Figure 1
 Data_MEX_label_10x1 <- data.frame(Contribution=c(-0.25, -1, -0.11,
                                                  -0.2, -1, -0.11),
-                                  Age = c(9,3,7,
+                                  Age = c(9,2,7,
                                           9,4,2),
                                   Sex = c("Males", "Males", "Males",
                                           "Females", "Females", "Females"),
@@ -231,16 +235,16 @@ Data_MEX_label_10x1 <- data.frame(Contribution=c(-0.25, -1, -0.11,
                                              "COVID","COVID","COVID"),
                                   Period = c("2015-2019", "2019-2020", "2020-2021",
                                              "2015-2019", "2019-2020", "2020-2021"),
-                                  Text = c("Life expectancy change:",
+                                  Text = c("Life expectancy change:", 
+                                           "Life expectancy change:", 
                                            "Life expectancy change:",
-                                           "Life expectancy change:",
-                                           "Life expectancy change:",
-                                           "Life expectancy change:",
+                                           "Life expectancy change:", 
+                                           "Life expectancy change:", 
                                            "Life expectancy change:"))
 # Text Figure 1
 Data_MEX_label_10x1_2 <- data.frame(Contribution=c(-0.25, -1, -0.11,
                                                    -0.2, -1, -0.11),
-                                    Age = c(8.5,2.5,6.5,
+                                    Age = c(8.5,1.5,6.5,
                                             8.5,3.5,1.5),
                                     Sex = c("Males", "Males", "Males",
                                             "Females", "Females", "Females"),
@@ -248,13 +252,12 @@ Data_MEX_label_10x1_2 <- data.frame(Contribution=c(-0.25, -1, -0.11,
                                                "COVID","COVID","COVID"),
                                     Period = c("2015-2019", "2019-2020", "2020-2021",
                                                "2015-2019", "2019-2020", "2020-2021"),
-                                    Text = c("-0.76y",
-                                             "-5.28y",
-                                             " 0.14y",
-                                             " 0.09y",
-                                             "-3.53y",
-                                             "-0.43y"))
-
+                                    Text = c("-0.73y", 
+                                             "-7.10y", 
+                                             " 0.02y",
+                                             " 0.15y", 
+                                             "-4.46y", 
+                                             "-0.44y"))
 
 
 Figure_1 <- ggplot(Data_Figure_1,

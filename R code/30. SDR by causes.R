@@ -16,7 +16,7 @@ rm(list = ls())
 
 pacman::p_load(here)
 
-source(here::here("R Code/00.Functions for analysis.R"))
+source(here::here("R Code/Final/00. Functions for analysis.R"))
 
 # ---------------------------------------------------------------------------- #
 #  1. Open Data
@@ -26,13 +26,13 @@ source(here::here("R Code/00.Functions for analysis.R"))
 #  Data
 # -------------------------------- #
 
-Data_state <- get(load(here::here("Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData")))
+Data_state <- get(load("R Code/Data/Final/Data_98_21_CoD_state_CONAPO_2023.RData"))
 
 
-Data_National <- get(load(here::here("Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData")))
+Data_National <- get(load("R Code/Data/Final/Data_98_21_CoD_National_CONAPO_2023.RData"))
 
 # Open data of standard population
-Standard_pop <- get(load(here::here("Data/tmp/CONAPO_StandarPopulation.RData")))
+Standard_pop <- get(load("R Code/Data/tmp/CONAPO_StandarPopulation.RData"))
 
 
 # ---------------------------------------------------------------------------- #
@@ -40,60 +40,61 @@ Standard_pop <- get(load(here::here("Data/tmp/CONAPO_StandarPopulation.RData")))
 # ---------------------------------------------------------------------------- #
 
 # - Combined National and State data
-Data_analysis <- Data_National %>%
+Data_analysis <- Data_National %>% 
   rename(ENTIDAD_NAME = ENTIDAD,
-         ENTIDAD = CVE_GEO) %>%
+         ENTIDAD = CVE_GEO) %>% 
   rbind(Data_state)
 
 # Replace with 0 missing values
-Data_analysis$`7`[is.na(Data_analysis$`7`)] <- 0
-Data_analysis$`9`[is.na(Data_analysis$`9`)] <- 0
-Data_analysis$`10`[is.na(Data_analysis$`10`)] <- 0
+Data_analysis$infectious[is.na(Data_analysis$infectious)] <- 0
+Data_analysis$perinatal[is.na(Data_analysis$perinatal)] <- 0
+Data_analysis$covid[is.na(Data_analysis$covid)] <- 0
+
 
 # - Compute Age-standardized mortality rates
-MEX_ASMR_national_states <- Data_analysis %>%
-  mutate(Total = `0` + `1` + `2` + `3` + `4` + `5` +
-           `6` + `7` + `8` + `9` + `10`,
-         Rest = round(1 - Total,2),
-         `0` = `0` + Rest,
-         mx_0 = round(`0`*mx,6),
-         mx_1 = round(`1`*mx,6),
-         mx_2 = round(`2`*mx,6),
-         mx_3 = round(`3`*mx,6),
-         mx_4 = round(`4`*mx,6),
-         mx_5 = round(`5`*mx,6),
-         mx_6 = round(`6`*mx,6),
-         mx_7 = round(`7`*mx,6),
-         mx_8 = round(`8`*mx,6),
-         mx_9 = round(`9`*mx,6),
-         mx_10 = round(`10`*mx,6),
-         check = mx_0 + mx_1 + mx_2 + mx_3 + mx_4 +
-           mx_5 + mx_6 + mx_7 + mx_7 + mx_8 +
-           mx_9 + mx_10) %>%
+MEX_ASMR_national_states <- Data_analysis %>% 
+  mutate(Total = all_other + circulatory + diabetes + digestive + homicides + infectious +
+           neoplasms + other_external +  perinatal + respiratory + covid,
+         mx_circulatory = round(circulatory*mx,6),
+         mx_diabetes = round(diabetes*mx,6),
+         mx_digestive = round(digestive*mx,6),
+         mx_homicides = round(homicides*mx,6),
+         mx_infectious = round(infectious*mx,6),
+         mx_neoplasms = round(neoplasms*mx,6),
+         mx_other_external = round(other_external*mx,6),
+         mx_perinatal = round(perinatal*mx,6),
+         mx_respiratory = round(respiratory*mx,6),
+         mx_covid = round(covid*mx,6),
+         mx_all_other = round(all_other*mx,6),
+         check =  mx_circulatory + mx_diabetes + mx_digestive + mx_homicides +
+           mx_infectious + mx_neoplasms + mx_other_external + mx_perinatal + mx_respiratory +
+           mx_covid + mx_all_other) %>% 
   dplyr::select(ENTIDAD, ENTIDAD_NAME,PSY, Dx, mx,
-                Age_group, SEX, YEAR, mx, mx_0,
-                mx_1, mx_2, mx_3, mx_4, mx_5,
-                mx_6, mx_7, mx_8, mx_9, mx_10) %>%
-  rename(Year = YEAR)  %>%
-  mutate(Total_mx = mx_0 + mx_1 + mx_2 + mx_3 + mx_4 + mx_5 + mx_6 + mx_7 + mx_8 + mx_9 + mx_10,
-         mx_amenable = mx_1 + mx_2 + mx_6 + mx_7 + mx_8 + mx_9,
-         mx_diabetes = mx_3,
-         mx_violence = mx_4,
-         mx_Covid = mx_10,
+                Age_group, SEX, YEAR, mx, 
+                mx_circulatory, mx_diabetes, mx_digestive, mx_homicides, mx_infectious,
+                mx_neoplasms, mx_other_external, mx_perinatal, mx_respiratory, mx_covid, mx_all_other) %>% 
+  rename(Year = YEAR)  %>% 
+  mutate(Total_mx =  mx_circulatory + mx_diabetes + mx_digestive + mx_homicides +
+           mx_infectious + mx_neoplasms + mx_other_external + mx_perinatal + mx_respiratory +
+           mx_covid + mx_all_other,
+         mx_amenable = mx_circulatory + mx_neoplasms + mx_respiratory + mx_infectious + mx_digestive + mx_perinatal, 
+         mx_diabetes = mx_diabetes,
+         mx_violence = mx_homicides,
+         mx_Covid = mx_covid,
          Dx_total = Total_mx*PSY,
          Dx_amenable = mx_amenable*PSY,
          Dx_diabetes = mx_diabetes*PSY,
          Dx_violence = mx_violence*PSY,
-         Dx_Covid = mx_Covid*PSY) %>%
-  group_by(Year, SEX, Age_group, ENTIDAD, ENTIDAD_NAME) %>%
+         Dx_Covid = mx_Covid*PSY) %>% 
+  group_by(Year, SEX, Age_group, ENTIDAD, ENTIDAD_NAME) %>% 
   summarize(PSY=sum(PSY),
             Dx = sum(Dx),
             Dx_total = sum(Dx_total),
             Dx_amenable = sum(Dx_amenable),
             Dx_diabetes = sum(Dx_diabetes),
             Dx_violence = sum(Dx_violence),
-            Dx_Covid = sum(Dx_Covid)) %>%
-  left_join(Standard_pop)  %>%
+            Dx_Covid = sum(Dx_Covid)) %>% 
+  left_join(Standard_pop)  %>% 
   mutate(mx_INEGI = Dx_total/PSY,
          AESMR = Prop*mx_INEGI,
          mx_violence = Dx_violence/PSY,
@@ -103,13 +104,13 @@ MEX_ASMR_national_states <- Data_analysis %>%
          ASAmenable= Prop*mx_amenable,
          ASDiabetes = Prop*mx_diabetes,
          ASVR = Prop*mx_violence,
-         ASCOVID = Prop*mx_COVID) %>%
-  group_by(Year, SEX, ENTIDAD, ENTIDAD_NAME) %>%
+         ASCOVID = Prop*mx_COVID) %>% 
+  group_by(Year, SEX, ENTIDAD, ENTIDAD_NAME) %>% 
   summarize(SDR=sum(AESMR)*100000,
             SDR_violence=sum(ASVR)*100000,
             SDR_amenable=sum(ASAmenable)*100000,
             SDR_diabetes=sum(ASDiabetes)*100000,
             SDR_COVID = sum(ASCOVID)*100000)
-
-save(MEX_ASMR_national_states, file = here::here("Data/Final/MEX_ASMR.RData"))
+  
+save(MEX_ASMR_national_states, file = "R Code/Data/Final/MEX_ASMR.RData")
 

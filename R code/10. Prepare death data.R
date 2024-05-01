@@ -319,7 +319,7 @@ Data_deaths_1998_2021_adj <- rbind(Data_deaths_1998_2021_adj_State,
 
 # We save the data
 save(Data_deaths_1998_2021_adj,
-     file = "R Code/Data/tmp/Data_deaths_1998_2021_adj.RData")
+     file = "Data/tmp/Data_deaths_1998_2021_adj.RData")
 
 
 
